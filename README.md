@@ -8,4 +8,6 @@ From a Debian or Ubuntu image:
 sh <(curl -L https://raw.githubusercontent.com/cceckman/debbie/master/debbie.sh)
 ```
 
-`TODO` for cceckman to shortlink that.
+Yes, yes, I should shorten that; but right now cceckman.com doesn't have a cert.
+So, yes, I'm being unsafe by piping commands to a shell... but at least it's
+through HTTPS.
