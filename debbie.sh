@@ -27,7 +27,7 @@ PUSHD="$(pwd)"
 cd $HOME
 
 # Start by entering sudo mode.
-if "$USER" == "root"
+if [ "$USER" = "root" ]
 then
   echo "Don't run this as root!"
   echo "Just run as yourself; debbie will ask for sudo permission when needed."
