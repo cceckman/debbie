@@ -22,7 +22,9 @@ tools="apt-get apt-key cat curl hostname ssh-keygen sudo tee which lsb_release"
 pkgs="git"
 
 # Begin: start in a common base directory.
-pushd $HOME
+# pushd is a Bash builtin, not a POSIX-compatible command.
+PUSHD="$(pwd)"
+cd $HOME
 
 # Start by entering sudo mode.
 if "$USER" == "root"
@@ -170,4 +172,4 @@ gcloud components install kubectl || {
 
 echo "All done! Log out to make everything up-to-date."  
 
-popd
+cd $PUSHD
