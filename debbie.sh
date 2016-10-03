@@ -109,18 +109,15 @@ $HOME/scripts/update-repos cceckman/debbie
 
 # Add some custom repositories
 # Bazel
-echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" \
-  | sudo tee /etc/apt/sources.list.d/bazel.list
+echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
 
-curl https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg \
-  | sudo apt-key add 
+curl https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg | sudo apt-key add  -
 
 # GCloud
 export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
-echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" \
-  | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-  | sudo apt-key add -
+echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
 sudo apt-get update
 # Load packages
@@ -142,10 +139,10 @@ sudo apt-get install \
   mlocate \
   mtr \
   ninja-build \
-  ntfsprogs \
+  ntfs-3g \
   parted \
   pkg-config \
-  python2 \
+  python \
   rsync \
   screen \
   ssh \
