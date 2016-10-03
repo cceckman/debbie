@@ -125,13 +125,14 @@ echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee 
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
 sudo apt-get update
-# Load packages
+# Load packages. This eats a little more than 1GB, all told.
 sudo apt-get install \
   arping \
   bash \
   bazel \
   bc \
   clang \
+  cmatrix \
   default-jdk \
   dosfstools \
   fping \
@@ -141,6 +142,7 @@ sudo apt-get install \
   libanyevent-i3-perl \
   lldb \
   llvm \
+  make \
   mlocate \
   mtr \
   ninja-build \
