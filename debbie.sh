@@ -11,15 +11,12 @@ yesno() {
   echo "$1"
   echo -n "(y/N)> "
   read result
-  echo -n "$result" | grep '^yY'
+  echo -n "$result" | grep -q '^[yY]'
   return $?
 }
 
 # Header: required tools.
 tools="apt-get apt-key cat curl hostname ssh-keygen sudo tee which lsb_release grep"
-
-# Header: packages to preload.
-pkgs="git"
 
 # Begin: start in a common base directory.
 # pushd is a Bash builtin, not a POSIX-compatible command.
@@ -38,6 +35,7 @@ else
 fi
 
 # Start off: make sure we have some basic tools.
+echo "Looking for required tools..."
 for tool in $tools
 do
   if ! which $tool
@@ -47,8 +45,8 @@ do
   fi
 done
 
-# Get some early packages
-sudo apt-get install $pkgs
+# Get git
+sudo apt-get install git
 
 # Set up SSH credentials, incl. for Github.
 
@@ -111,10 +109,12 @@ $HOME/scripts/update-repos cceckman/debbie
 
 # Add some custom repositories
 # Bazel
-echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" \ 
+echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" \
   | sudo tee /etc/apt/sources.list.d/bazel.list
+
 curl https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg \
   | sudo apt-key add 
+
 # GCloud
 export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
 echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" \
