@@ -86,6 +86,11 @@ else
 fi
 
 # Github now, presumably, has whatever keys we're using.
+# Set defaults:
+git config --global user.email "$(echo 'puneyrf@pprpxzna.pbz' | tr '[A-Za-z]' '[N-ZA-Mn-za-m]')"
+git config --global user.name "Charles Eckman"
+git config --global push.default simple
+
 # Clone Tilde.
 {
   git clone git@github.com:cceckman/Tilde.git Tilde 2>&1 || {
