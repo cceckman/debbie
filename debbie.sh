@@ -11,12 +11,12 @@ yesno() {
   echo "$1"
   echo -n "(y/N)> "
   read result
-  [[ "$result" == y* ]] || [[ "$result" == Y* ]]
+  echo -n "$result" | grep '^yY'
   return $?
 }
 
 # Header: required tools.
-tools="apt-get apt-key cat curl hostname ssh-keygen sudo tee which lsb_release"
+tools="apt-get apt-key cat curl hostname ssh-keygen sudo tee which lsb_release grep"
 
 # Header: packages to preload.
 pkgs="git"
