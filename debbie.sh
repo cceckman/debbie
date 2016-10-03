@@ -164,14 +164,9 @@ sudo apt-get install \
   exit $x
 }
 
-# To add: remote GUI tools
+# TODO: remote GUI tools
+# TODO: installing kubectl
 
-gcloud components install kubectl || {
-  x=$?
-  echo "kubectl install failed with exit code: $x"
-  exit $x
-}
-
-echo "All done! Log out to make everything up-to-date."  
+echo "All done! Log in again to update everything."
 
 cd $PUSHD
