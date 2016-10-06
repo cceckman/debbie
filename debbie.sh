@@ -139,6 +139,7 @@ sudo apt-get install \
   golang \
   google-cloud-sdk \
   i3 \
+  irssi \
   libanyevent-i3-perl \
   lldb \
   llvm \
