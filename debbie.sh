@@ -66,11 +66,11 @@ then
 HRD
   while true
   do
-    prompt "Enter a Github authentication token for ${gh_username}:"
+    prompt "Enter a Github authentication token for ${USER}:"
     read token
 
     {
-      curl -X POST -d @$keyreq -u ${gh_username}:${token} https://api.github.com/user/keys \
+      curl -X POST -d @$keyreq -u ${USER}:${token} https://api.github.com/user/keys \
       && { echo "Upload successful!"; break; } 
     } || { 
       echo "Didn't upload Github key! "
