@@ -135,6 +135,7 @@ sudo apt-get install \
   bash \
   bazel \
   bc \
+  chromium \
   clang \
   cmatrix \
   default-jdk \
