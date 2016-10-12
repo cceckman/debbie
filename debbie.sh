@@ -70,7 +70,11 @@ HRD
     read token
 
     {
-      curl -X POST -d @$keyreq -u ${USER}:${token} https://api.github.com/user/keys \
+      curl --fail \
+        -X POST \
+        --data-binary @$keyreq \
+        -u ${USER}:${token} \
+        https://api.github.com/user/keys \
       && { echo "Upload successful!"; break; } 
     } || { 
       echo "Didn't upload Github key! "
