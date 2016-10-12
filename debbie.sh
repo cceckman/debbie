@@ -151,6 +151,7 @@ sudo apt-get install \
   parted \
   pkg-config \
   python \
+  python-gflags \
   rsync \
   screen \
   ssh \
