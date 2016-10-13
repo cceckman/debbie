@@ -151,6 +151,7 @@ sudo apt-get install \
   make \
   mlocate \
   mtr \
+  network-manager \
   ninja-build \
   ntfs-3g \
   parted \
