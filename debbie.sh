@@ -165,6 +165,7 @@ sudo apt-get install \
   xclip \
   xorg \
   xscreensaver \
+  xss-lock \
   xterm \
   zip \
  || {
