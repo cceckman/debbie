@@ -133,6 +133,10 @@ sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 \
   --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 echo "deb https://apt.dockerproject.org/repo debian-jessie main" | sudo tee /etc/apt/sources.list.d/docker.list
 
+# Docker group setup
+sudo groupadd docker
+sudo gpasswd -a ${USER} docker
+
 sudo apt-get update
 # Load packages. This eats a little more than 1GB, all told.
 sudo apt-get install \
