@@ -151,6 +151,7 @@ sudo apt-get install \
   default-jdk \
   docker-engine \
   dosfstools \
+  feh \
   fping \
   golang \
   google-cloud-sdk \
