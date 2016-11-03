@@ -192,6 +192,10 @@ sudo apt-get install \
 # TODO: remote GUI tools
 # TODO: installing kubectl
 
+# One-time setup scripts
+$HOME/scripts/install-wallpapertab.sh
+
+
 echo "All done! Log in again to update everything."
 
 cd $PUSHD
