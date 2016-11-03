@@ -155,6 +155,7 @@ sudo apt-get install \
   golang \
   google-cloud-sdk \
   i3 \
+  imagemagick \
   irssi \
   libanyevent-i3-perl \
   lldb \
