@@ -167,6 +167,7 @@ sudo apt-get install \
   network-manager \
   ninja-build \
   ntfs-3g \
+  open-vm-tools \
   parted \
   pkg-config \
   python \
