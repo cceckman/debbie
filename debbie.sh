@@ -151,6 +151,7 @@ sudo apt-get install \
   default-jdk \
   docker-engine \
   dosfstools \
+  gdb \
   feh \
   fping \
   golang \
