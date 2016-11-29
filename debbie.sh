@@ -145,6 +145,7 @@ sudo apt-get install \
   bash \
   bazel \
   bc \
+  cgmanager \
   chromium \
   clang \
   cmatrix \
