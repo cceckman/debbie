@@ -179,6 +179,7 @@ sudo apt-get install \
   ssh \
   traceroute \
   vim \
+  vim-gtk \
   xclip \
   xorg \
   xscreensaver \
