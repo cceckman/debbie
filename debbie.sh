@@ -180,6 +180,7 @@ sudo apt-get install \
   traceroute \
   vim \
   vim-gtk \
+  xbacklight \
   xclip \
   xorg \
   xscreensaver \
