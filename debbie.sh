@@ -197,7 +197,11 @@ sudo apt-get install \
 {
   GOTAR=/tmp/golang.tar.gz
   curl -o $GOTAR https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz \
-  && tar -C /usr/local -xzf $GOTAR
+  && sudo tar -C /usr/local -xzf $GOTAR
+} || {
+  x=$?
+  echo "Go tools install failed with exit code: $x"
+  exit $x
 }
 
 # TODO: remote GUI tools
