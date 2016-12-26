@@ -155,7 +155,6 @@ sudo apt-get install \
   gdb \
   feh \
   fping \
-  golang \
   google-cloud-sdk \
   i3 \
   imagemagick \
@@ -194,8 +193,17 @@ sudo apt-get install \
   exit $x
 }
 
+# Manually install Go, since the mainline repos aren't up-to-date.
+{
+  GOTAR=/tmp/golang.tar.gz
+  curl -o $GOTAR https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz \
+  && tar -C /usr/local -xzf $GOTAR
+}
+
 # TODO: remote GUI tools
 # TODO: installing kubectl
+
+
 
 # One-time setup scripts
 $HOME/scripts/install-wallpapertab.sh
