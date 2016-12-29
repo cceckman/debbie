@@ -157,6 +157,7 @@ sudo apt-get install \
   feh \
   fping \
   google-cloud-sdk \
+  graphviz \
   i3 \
   imagemagick \
   irssi \
