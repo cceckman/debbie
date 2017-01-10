@@ -176,7 +176,6 @@ sudo apt-get install \
   python \
   python-gflags \
   rsync \
-  rustc \
   screen \
   ssh \
   traceroute \
@@ -206,6 +205,9 @@ sudo apt-get install \
   echo "Go tools install failed with exit code: $x"
   exit $x
 }
+
+# Manually install rust via rustup.
+curl https://sh.rustup.sh -sSf | sh
 
 # TODO: remote GUI tools
 # TODO: installing kubectl
