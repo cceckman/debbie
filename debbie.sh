@@ -176,6 +176,7 @@ sudo apt-get install \
   python \
   python-gflags \
   rsync \
+  rustc \
   screen \
   ssh \
   traceroute \
