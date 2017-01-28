@@ -218,7 +218,12 @@ curl https://sh.rustup.sh -sSf | sh
 # One-time setup scripts
 $HOME/scripts/install-wallpapertab.sh
 
+echo "If you're going to use this with a Macbook, you probably want to look at:"
+echo "http://askubuntu.com/questions/530325/tilde-key-on-mac-air-with-ubuntu"
 
-echo "All done! Log in again to update everything."
+echo -n "OK?"
+read
+
+echo "All done! Reboot to finish up. to update everything."
 
 cd $PUSHD
