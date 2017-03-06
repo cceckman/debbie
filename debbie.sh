@@ -45,8 +45,24 @@ do
   fi
 done
 
-# Get git
 sudo apt-get update
+
+# Want a more recent kernel?
+if { uname -r | grep -q '^[^4]'; } && yesno "Would you like to update to a 4.X kernel?"
+then
+  {
+  sudo apt-get install -t jessie-backports \
+    linux-image-amd64 \
+    linux-headers-amd64 \
+    linux-image-extra \
+    dkms \
+    virtualbox-guest-dkms \
+    broadcom-sta-dkms
+  }
+fi
+
+
+# Get git
 sudo apt-get install git
 
 # Set up SSH credentials, incl. for Github.
