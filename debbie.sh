@@ -96,22 +96,36 @@ git config --global user.name "Charles Eckman"
 git config --global push.default simple
 
 # Clone Tilde.
-{
-  git clone git@github.com:cceckman/Tilde.git Tilde 2>&1 || {
+ETCLONEHOME=''
+if test -d $HOME/.git
+then
+  if yesno "Found $HOME/.git. Clone Tilde anyway?"
+  then
+    ETCLONEHOME='no'
+  fi
+fi
+
+if [ "$ETCLONEHOME" != "" ]
+then
+  echo "Cloning Tilde repository..."
+  {
+    git clone git@github.com:cceckman/Tilde.git Tilde 2>&1 || {
+      x=$?
+      echo "Failed to clone Tilde! Exiting unhappily.,"
+      exit $x
+    }
+  } && {
+    mv Tilde/.git . \
+    && rm -rf Tilde \
+    && git reset --hard \
+    && git submodule update --recursive --init
+  } || {
     x=$?
-    echo "Failed to clone Tilde! Exiting unhappily.,"
+    echo "Failed to load Tilde into \$HOME!"
     exit $x
   }
-} && {
-  mv Tilde/.git . \
-  && rm -rf Tilde \
-  && git reset --hard \
-  && git submodule update --recursive --init
-} || {
-  x=$?
-  echo "Failed to load Tilde into \$HOME!"
-  exit $x
-}
+fi
+
 # Load any other "default" repositories.
 # Include this one- hey, if I'm using it, I probably want it cloned.
 $HOME/scripts/update-repos cceckman/debbie
