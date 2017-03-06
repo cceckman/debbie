@@ -226,7 +226,7 @@ sudo apt-get install \
 }
 
 # Manually install rust via rustup.
-curl https://sh.rustup.sh -sSf | sh
+# curl https://sh.rustup.sh -sSf | sh
 
 # TODO: remote GUI tools
 # TODO: installing kubectl
