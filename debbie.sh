@@ -46,6 +46,7 @@ do
 done
 
 # Get git
+sudo apt-get update
 sudo apt-get install git
 
 # Set up SSH credentials, incl. for Github.
@@ -130,15 +131,18 @@ fi
 # Include this one- hey, if I'm using it, I probably want it cloned.
 $HOME/scripts/update-repos cceckman/debbie
 
+# Need this to use the other repositories...
+sudo apt-get install apt-transport-https
+
 # Add some custom repositories
 # Bazel
-echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
 
 curl https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg | sudo apt-key add  -
 
 # GCloud
 export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
-echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
 
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
@@ -154,7 +158,6 @@ sudo gpasswd -a ${USER} docker
 sudo apt-get update
 # Load packages. This eats a little more than 1GB, all told.
 sudo apt-get install \
-  apt-transport-https \
   arping \
   autoconf \
   bash \
