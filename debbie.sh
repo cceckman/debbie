@@ -179,6 +179,7 @@ sudo apt-get install \
   rsync \
   screen \
   ssh \
+  tcpdump \
   traceroute \
   vim \
   vim-gtk \
