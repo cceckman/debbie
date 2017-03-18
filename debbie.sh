@@ -213,6 +213,7 @@ sudo apt-get install \
   screen \
   ssh \
   tcpdump \
+  tmux \
   traceroute \
   vim \
   vim-gtk \
