@@ -111,6 +111,7 @@ fi
 git config --global user.email "$(echo 'puneyrf@pprpxzna.pbz' | tr '[A-Za-z]' '[N-ZA-Mn-za-m]')"
 git config --global user.name "Charles Eckman"
 git config --global push.default simple
+git config --global status.showUntrackedFiles no
 
 # Clone Tilde.
 ETCLONEHOME=''
