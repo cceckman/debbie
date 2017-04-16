@@ -187,15 +187,16 @@ sudo apt-get install \
   default-jdk \
   docker-engine \
   dosfstools \
-  gdb \
   feh \
   fping \
+  gdb \
   google-cloud-sdk \
   graphviz \
   haskell-platform \
   i3 \
   imagemagick \
   irssi \
+  kubectl \
   libanyevent-i3-perl \
   lldb \
   llvm \
@@ -247,8 +248,6 @@ sudo apt-get install \
 # curl https://sh.rustup.sh -sSf | sh
 
 # TODO: remote GUI tools
-# TODO: installing kubectl
-
 
 
 # One-time setup scripts
