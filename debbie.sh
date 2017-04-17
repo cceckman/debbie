@@ -180,6 +180,7 @@ sudo apt-get install \
   bash \
   bazel \
   bc \
+  bd \
   cgmanager \
   chromium \
   clang \
