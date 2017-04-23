@@ -21,6 +21,9 @@ gcloud compute \
 # clean up the instance on exit from this script.
 trap "gcloud -q compute instances delete --zone $ZONE $NAME" EXIT 
 
+# Give the instance some time to prepare
+sleep 70
+
 # SSH in, run the script.
 eval `ssh-agent`
 gcloud compute ssh $NAME \
