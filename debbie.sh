@@ -243,7 +243,7 @@ sudo apt-get install \
   xss-lock \
   xterm \
   zip \
-  ${more_pkgs}
+  ${more_pkgs} \
  || {
   x=$?
   echo "Package install failed with exit code: $x"
