@@ -114,16 +114,16 @@ git config --global push.default simple
 git config --global status.showUntrackedFiles no
 
 # Clone Tilde.
-ETCLONEHOME=''
+ETCLONEHOME='yes'
 if test -d $HOME/.git
 then
-  if yesno "Found $HOME/.git. Clone Tilde anyway?"
+  if yesno "Found $HOME/.git. Skip cloning Tilde?"
   then
     ETCLONEHOME='no'
   fi
 fi
 
-if [ "$ETCLONEHOME" == "" ]
+if [ "$ETCLONEHOME" == 'yes' ]
 then
   echo "Cloning Tilde repository..."
   {
@@ -175,6 +175,22 @@ sudo groupadd docker
 sudo gpasswd -a ${USER} docker
 
 sudo apt-get update
+
+# Packages that are different on Debian vs. Ubuntu.
+
+more_pkgs=''
+case "$(uname -v)" in
+  *Ubuntu*)
+    more_pkgs='chromium-browser'
+    ;;
+  *Debian*)
+    mork_pkgs='chromium'
+    ;;
+esac
+# Missing:
+# - bd not available in Ubuntu 16.04, so don't include it anywhere.
+    
+
 # Load packages. This eats a little more than 1GB, all told.
 sudo apt-get install \
   arping \
@@ -182,9 +198,7 @@ sudo apt-get install \
   bash \
   bazel \
   bc \
-  bd \
   cgmanager \
-  chromium \
   clang \
   cmatrix \
   docker-engine \
@@ -229,6 +243,7 @@ sudo apt-get install \
   xss-lock \
   xterm \
   zip \
+  ${more_pkgs}
  || {
   x=$?
   echo "Package install failed with exit code: $x"
