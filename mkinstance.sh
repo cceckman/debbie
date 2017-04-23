@@ -29,7 +29,7 @@ eval `ssh-agent`
 gcloud compute ssh $NAME \
   --zone "$ZONE" \
   --command \
-    'cat | sh <(curl -L https://raw.githubusercontent.com/cceckman/debbie/master/debbie.sh)' \
+    'cat /dev/null | sh <(curl -L https://raw.githubusercontent.com/cceckman/debbie/master/debbie.sh)' \
   -- -A
 
 if [ $? -ne 0 ]
