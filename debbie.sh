@@ -10,6 +10,13 @@ prompt() {
 yesno() {
   echo "$1"
   echo -n "(y/N)> "
+
+  # Skip (default to 'no') if non-interactive.
+  if [ -t 0 ]
+  then
+    return 1
+  fi
+
   read result
   echo -n "$result" | grep -q '^[yY]'
   return $?
@@ -117,9 +124,10 @@ git config --global status.showUntrackedFiles no
 ETCLONEHOME='yes'
 if test -d $HOME/.git
 then
-  if yesno "Found $HOME/.git. Skip cloning Tilde?"
+  ETCLONEHOME='no'
+  if yesno "Found $HOME/.git. Clone Tilde anyway?"
   then
-    ETCLONEHOME='no'
+    ETCLONEHOME='yes'
   fi
 fi
 
