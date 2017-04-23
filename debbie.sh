@@ -187,7 +187,6 @@ sudo apt-get install \
   chromium \
   clang \
   cmatrix \
-  default-jdk \
   docker-engine \
   dosfstools \
   feh \
