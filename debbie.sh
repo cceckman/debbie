@@ -123,7 +123,7 @@ then
   fi
 fi
 
-if [ "$ETCLONEHOME" != "" ]
+if [ "$ETCLONEHOME" == "" ]
 then
   echo "Cloning Tilde repository..."
   {
@@ -158,10 +158,12 @@ echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" |
 curl https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg | sudo apt-key add  -
 
 # GCloud
-export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
-echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
-
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+if ! ls /etc/apt/sources.list.d/ | grep -q google-cloud
+then
+  CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+  echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+fi
 
 # Docker
 sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 \
