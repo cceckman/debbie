@@ -51,7 +51,7 @@ sudo apt-get update
 if { uname -r | grep -q '^[^4]'; } && yesno "Would you like to update to a 4.X kernel?"
 then
   {
-  sudo apt-get install -t jessie-backports \
+  sudo apt-get -y install -t jessie-backports \
     linux-image-amd64 \
     linux-headers-amd64 \
     linux-image-extra \
@@ -63,7 +63,7 @@ fi
 
 
 # Get git
-sudo apt-get install git
+sudo apt-get -y install git
 
 # Set up SSH credentials, incl. for Github.
 
@@ -149,7 +149,7 @@ fi
 $HOME/scripts/update-repos cceckman/debbie
 
 # Need this to use the other repositories...
-sudo apt-get install apt-transport-https
+sudo apt-get -y install apt-transport-https
 
 # Add some custom repositories
 # Bazel
@@ -192,7 +192,7 @@ esac
     
 
 # Load packages. This eats a little more than 1GB, all told.
-sudo apt-get install \
+sudo apt-get -y install \
   arping \
   autoconf \
   bash \
