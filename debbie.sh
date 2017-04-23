@@ -278,12 +278,9 @@ sudo apt-get -y install \
 # One-time setup scripts
 $HOME/scripts/install-wallpapertab.sh
 
-echo "If you're going to use this with a Macbook, you probably want to look at:"
-echo "http://askubuntu.com/questions/530325/tilde-key-on-mac-air-with-ubuntu"
+# echo "If you're going to use this with a Macbook, you probably want to look at:"
+# echo "http://askubuntu.com/questions/530325/tilde-key-on-mac-air-with-ubuntu"
 
-echo -n "OK? "
-read -r REPLY
-
-echo "All done! Reboot to finish up. to update everything."
+echo "All done! Reboot to finish up."
 
 cd $PUSHD
