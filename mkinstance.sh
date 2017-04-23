@@ -21,7 +21,17 @@ gcloud compute \
 # clean up the instance on exit from this script.
 trap "gcloud -q compute instances delete --zone $ZONE $NAME" EXIT 
 
-
+# SSH in, run the script.
+eval `ssh-agent`
+gcloud compute ssh $NAME \
+  --zone "$ZONE" \
+  --command \
+    'sh -i <(curl -L https://raw.githubusercontent.com/cceckman/debbie/master/debbie.sh)' \
+  -- -A
+if [ $? -ne 0 ]
+then
+  echo "failed!" 1>&2
+fi
 
 
 set +xv
