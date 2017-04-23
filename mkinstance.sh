@@ -29,12 +29,21 @@ eval `ssh-agent`
 gcloud compute ssh $NAME \
   --zone "$ZONE" \
   --command \
-    'sh -i <(curl -L https://raw.githubusercontent.com/cceckman/debbie/master/debbie.sh)' \
+    'sh <(curl -L https://raw.githubusercontent.com/cceckman/debbie/master/debbie.sh)' \
   -- -A
+
 if [ $? -ne 0 ]
 then
   echo "failed!" 1>&2
+else
+  echo "Script succeeded!"
 fi
 
-
 set +xv
+
+echo "Run:"
+echo "gcloud compute ssh $NAME --zone $ZONE"
+echo "to inspect the instance; hit enter here to tear down this instance."
+read
+
+
