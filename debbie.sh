@@ -131,7 +131,7 @@ then
   fi
 fi
 
-if [ "$ETCLONEHOME" == 'yes' ]
+if test "$ETCLONEHOME" = 'yes'
 then
   echo "Cloning Tilde repository..."
   {
