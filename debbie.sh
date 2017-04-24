@@ -150,6 +150,9 @@ then
     echo "Failed to load Tilde into \$HOME!"
     exit $x
   }
+else
+  echo "Skipping cloning Tilde..."
+  touch $HOME/clone-skipped
 fi
 
 # Load any other "default" repositories.

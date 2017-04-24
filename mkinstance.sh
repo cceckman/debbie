@@ -19,7 +19,7 @@ gcloud compute \
 }
 
 # clean up the instance on exit from this script.
-trap "gcloud -q compute instances delete --zone $ZONE $NAME" EXIT 
+trap "set +x; gcloud -q compute instances delete --zone $ZONE $NAME; set -x" EXIT 
 
 # Give the instance some time to prepare
 sleep 70
@@ -41,9 +41,18 @@ fi
 
 set +xv
 
+echo "Opening console for inspection..."
+
 echo "Run:"
 echo "gcloud compute ssh $NAME --zone $ZONE"
-echo "to inspect the instance; hit enter here to tear down this instance."
-read
+echo "to inspect the instance. Type 'done' to destroy this instance."
 
+while read foo
+do
+  if [ "$foo" == "done" ]
+  then
+    break
+  fi
+done
 
+echo "Exiting, including cleaning up instance..."
