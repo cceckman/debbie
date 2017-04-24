@@ -3,10 +3,19 @@
 # Use default inputs.
 set -xv
 
-NAME="ubuntu-testing"
-IMG="ubuntu-1604-xenial-v20170330"
-IMG_PROJECT="ubuntu-os-cloud"
+
+NAME="debbie-testing"
 ZONE="us-central1-c"
+
+if test "$1" = "-d"
+then
+  # use Debian
+  IMG="debian-8-jessie-v20170327"
+  IMG_PROJECT="debian-cloud"
+else
+  IMG="ubuntu-1604-xenial-v20170330"
+  IMG_PROJECT="ubuntu-os-cloud"
+fi
 
 gcloud compute \
   instances create "$NAME" \
@@ -44,7 +53,7 @@ set +xv
 echo "Opening console for inspection..."
 
 echo "Run:"
-echo "gcloud compute ssh $NAME --zone $ZONE"
+echo "gcloud compute ssh $NAME --zone $ZONE -- -A"
 echo "to inspect the instance. Type 'done' to destroy this instance."
 
 while read foo
