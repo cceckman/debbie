@@ -53,6 +53,8 @@ do
 done
 
 sudo apt-get update
+# Bring everything up to date from the base image.
+sudo apt-get -y upgrade
 
 # Want a more recent kernel?
 if { uname -r | grep -q '^[^4]'; } && yesno "Would you like to update to a 4.X kernel?"
