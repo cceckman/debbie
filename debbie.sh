@@ -121,6 +121,10 @@ git config --global user.email "$(echo 'puneyrf@pprpxzna.pbz' | tr '[A-Za-z]' '[
 git config --global user.name "Charles Eckman"
 git config --global push.default simple
 git config --global status.showUntrackedFiles no
+# From https://stackoverflow.com/questions/4611512/is-there-a-way-to-make-git-pull-automatically-update-submodules
+# Automatically recurse into submodules when pulling.
+# Makes some of the stuff in update-repos redundant, but that's okay.
+git config --global alias.pullall '!f(){ git pull "$@" && git submodule update --init --recursive; }; f'
 
 # Set Github public key.
 mkdir ~/.ssh
