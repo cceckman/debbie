@@ -223,6 +223,7 @@ sudo apt-get -y install \
   cgmanager \
   clang \
   cmatrix \
+  devscripts \
   docker-engine \
   dosfstools \
   feh \
