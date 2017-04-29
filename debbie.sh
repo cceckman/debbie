@@ -12,8 +12,9 @@ yesno() {
   echo -n "(y/N)> "
 
   # Skip (default to 'no') if non-interactive.
-  if [ -t 0 ]
+  if ! [ -t 0 ]
   then
+    echo "fd 0 is not a TTY ∴ assuming 'No' by default"
     return 1
   fi
 
