@@ -277,7 +277,7 @@ sudo apt-get -y install \
 # Manually install Go, since the mainline repos aren't up-to-date.
 {
   GOTAR=/tmp/golang.tar.gz
-  curl -o $GOTAR https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz \
+  curl -o $GOTAR https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz \
   && sudo tar -C /usr/local -xzf $GOTAR
 } || {
   x=$?
