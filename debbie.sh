@@ -275,15 +275,22 @@ sudo apt-get -y install \
 }
 
 # Manually install Go, since the mainline repos aren't up-to-date.
-{
-  GOTAR=/tmp/golang.tar.gz
-  curl -o $GOTAR https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz \
-  && sudo tar -C /usr/local -xzf $GOTAR
-} || {
-  x=$?
-  echo "Go tools install failed with exit code: $x"
-  exit $x
-}
+GO_VERSION="1.8.1"
+if ! go version | grep "$GO_VERSION"
+then
+  sudo rm -rf /user/local/go
+  {
+    GOTAR=/tmp/golang.tar.gz
+    curl -o $GOTAR https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz \
+    && sudo tar -C /usr/local -xzf $GOTAR
+  } || {
+    x=$?
+    echo "Go tools install failed with exit code: $x"
+    exit $x
+  }
+else
+  echo "Go appears to be up to date."
+fi
 
 # Manually install rust via rustup.
 # curl https://sh.rustup.sh -sSf | sh
