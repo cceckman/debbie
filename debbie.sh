@@ -276,7 +276,7 @@ sudo apt-get -y install \
 
 # Manually install Go, since the mainline repos aren't up-to-date.
 GO_VERSION="1.8.1"
-if ! go version | grep "$GO_VERSION"
+if ! which go || ! go version | grep "$GO_VERSION"
 then
   sudo rm -rf /user/local/go
   {
@@ -290,6 +290,23 @@ then
   }
 else
   echo "Go appears to be up to date."
+fi
+
+if ! which ctags
+then
+  # Manually install universal ctags
+  pushd /tmp/
+  git clone git://github.com/universal-ctags/ctags && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    sudo make install || {
+    x=$?
+    echo "Failed to install universal ctags!" 1>&2
+    echo $x
+  }
+
+  popd
 fi
 
 # Manually install rust via rustup.
