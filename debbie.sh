@@ -267,12 +267,16 @@ sudo apt-get -y install \
   xss-lock \
   xterm \
   zip \
+  zsh \
   ${more_pkgs} \
  || {
   x=$?
   echo "Package install failed with exit code: $x"
   exit $x
 }
+
+# Set default shell.
+sudo chsh -s $(which zsh) $USER
 
 # Manually install Go, since the mainline repos aren't up-to-date.
 GO_VERSION="1.8.1"
