@@ -247,6 +247,7 @@ sudo apt-get -y install \
   ninja-build \
   ntfs-3g \
   open-vm-tools \
+  parallel \
   parted \
   pkg-config \
   python \
