@@ -251,6 +251,7 @@ sudo apt-get -y install \
   pkg-config \
   python \
   python-gflags \
+  redshift \
   rsync \
   screen \
   ssh \
