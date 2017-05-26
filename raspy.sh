@@ -5,25 +5,32 @@
 # https://gist.github.com/jkullick/9b02c2061fbdf4a6c4e8a78f1312a689
 # https://wiki.debian.org/RaspberryPi/qemu-user-static
 
+set -e
+
 DEVICE="$1"
 
 # install dependecies
 apt-get install qemu qemu-user-static binfmt-support
 
-# download raspbian image
-wget https://downloads.raspberrypi.org/raspbian_latest
+DL_TGT=/tmp/raspbian_latest.zip
+if ! test -e $DL_TGT
+then
+  # download raspbian image
+  curl -L -o $DL_TGT https://downloads.raspberrypi.org/raspbian_latest
+
+  echo "Download complete!"
+fi
 
 # extract raspbian image
-IMG="$(unzip -l raspbian_latest)"
+IMG="$(unzip -l $DL_TGT)"
 
-if (( $(unzip -l raspbian_latest | wc -l) != 1 ))
+if (( $(unzip -l $DL_TGT | wc -l) != 1 ))
 then
-  echo "Unexpected files in archive: $(unzip -l raspbian_latest)"
+  echo "Unexpected files in archive: $(unzip -l $DL_TGT)"
   exit 1
 fi
 
-unzip raspbian_latest
-
+unzip $DL_TGT
 
 # extend raspbian image by 1gb
 dd if=/dev/zero bs=1M count=1024 >> $IMG
