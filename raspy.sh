@@ -9,6 +9,18 @@ set -e
 
 DEVICE="$1"
 
+if (( "$#" != 1 ))
+then
+  echo >&2 "Specify one argument: the device to write to, e.g. /dev/sdc"
+fi
+
+# Now that we have the image working, copy it to the device
+if mount | greq -q "$DEVICE"
+then
+  echo >&2 "$DEVICE appears to be mounted; aborting"
+  exit 1
+fi
+
 # install dependecies
 apt-get install qemu qemu-user-static binfmt-support
 
@@ -21,16 +33,16 @@ then
   echo "Download complete!"
 fi
 
-# extract raspbian image
-IMG="$(unzip -l $DL_TGT)"
-
 if (( $(unzip -l $DL_TGT | wc -l) != 1 ))
 then
   echo "Unexpected files in archive: $(unzip -l $DL_TGT)"
   exit 1
 fi
 
-unzip $DL_TGT
+# extract raspbian image
+IMG="/tmp/$(unzip -l $DL_TGT | head -1)"
+
+unzip $DL_TGT -d /tmp
 
 # extend raspbian image by 1gb
 dd if=/dev/zero bs=1M count=1024 >> $IMG
