@@ -8,8 +8,8 @@
 set -e
 
 DEVICE="$1"
-TMPDIR="/mnt/tmp"
-
+TMPDIR="$HOME/tmp/"
+mkdir -p $TMPDIR
 
 if test "$#" -ne 1
 then
@@ -54,42 +54,42 @@ echo "Done!"
 dd if=/dev/zero bs=1M count=1024 >> $IMG
 
 # set up image as loop device
-losetup /dev/loop0 $IMG
+sudo losetup /dev/loop0 $IMG
 
 # check file system
-e2fsck -f /dev/loop0p2
+sudo e2fsck -f /dev/loop0p2
 
-#expand partition
-resize2fs /dev/loop0p2
+# expand partition
+sudo resize2fs /dev/loop0p2
 
 # mount partition
-mount -o rw /dev/loop0p2  /mnt
-mount -o rw /dev/loop0p1 /mnt/boot
+sudo mount -o rw /dev/loop0p2  /mnt
+sudo mount -o rw /dev/loop0p1 /mnt/boot
 
 # mount binds
-mount --bind /dev /mnt/dev/
-mount --bind /sys /mnt/sys/
-mount --bind /proc /mnt/proc/
-mount --bind /dev/pts /mnt/dev/pts
+sudo mount --bind /dev /mnt/dev/
+sudo mount --bind /sys /mnt/sys/
+sudo mount --bind /proc /mnt/proc/
+sudo mount --bind /dev/pts /mnt/dev/pts
 
 # ld.so.preload fix
-sed -i 's/^/#/g' /mnt/etc/ld.so.preload
+sudo sed -i 's/^/#/g' /mnt/etc/ld.so.preload
 
 # copy qemu binary
-cp /usr/bin/qemu-arm-static /mnt/usr/bin/
-cp dessert.sh /mnt/usr/bin
+sudo cp /usr/bin/qemu-arm-static /mnt/usr/bin/
+sudo cp dessert.sh /mnt/usr/bin
 
 # chroot to raspbian & run setup script
-chroot /mnt /bin/bash -c dessert.sh
+sudo chroot /mnt /bin/bash -c dessert.sh
 
 # revert ld.so.preload fix
-sed -i 's/^#//g' /mnt/etc/ld.so.preload
+sudo sed -i 's/^#//g' /mnt/etc/ld.so.preload
 
 # unmount everything
-umount /mnt/{dev/pts,dev,sys,proc,boot,}
+sudo umount /mnt/{dev/pts,dev,sys,proc,boot,}
 
 # unmount loop device
-losetup -d /dev/loop0
+sudo losetup -d /dev/loop0
 
 
 # Now that we have the image working, copy it to the device
