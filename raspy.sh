@@ -25,7 +25,7 @@ then
 fi
 
 # install dependecies
-apt-get install qemu qemu-user-static binfmt-support
+sudo apt-get install qemu qemu-user-static binfmt-support
 
 DL_TGT=$TMPDIR/raspbian_latest.zip
 if ! test -e $DL_TGT
