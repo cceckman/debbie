@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/sh -e
 # Raspberry Pi setup tool; runs on the host.
 
 # Sources:
@@ -8,14 +8,17 @@
 set -e
 
 DEVICE="$1"
+TMPDIR="/mnt/tmp"
 
-if (( "$#" != 1 ))
+
+if test "$#" -ne 1
 then
   echo >&2 "Specify one argument: the device to write to, e.g. /dev/sdc"
+  exit 1
 fi
 
 # Now that we have the image working, copy it to the device
-if mount | greq -q "$DEVICE"
+if mount | grep -q "$DEVICE"
 then
   echo >&2 "$DEVICE appears to be mounted; aborting"
   exit 1
@@ -24,25 +27,28 @@ fi
 # install dependecies
 apt-get install qemu qemu-user-static binfmt-support
 
-DL_TGT=/tmp/raspbian_latest.zip
+DL_TGT=$TMPDIR/raspbian_latest.zip
 if ! test -e $DL_TGT
 then
+  echo "No existing image found: $(ls $DL_TGT)"
   # download raspbian image
   curl -L -o $DL_TGT https://downloads.raspberrypi.org/raspbian_latest
 
   echo "Download complete!"
 fi
 
-if (( $(unzip -l $DL_TGT | wc -l) != 1 ))
+IMG="$TMPDIR/$(zipinfo -1 $DL_TGT)"
+
+if test $(zipinfo -1 $DL_TGT | wc -l) -ne 1
 then
-  echo "Unexpected files in archive: $(unzip -l $DL_TGT)"
+  echo >&2 "Unexpected files in archive: \n $(zipinfo -1 $DL_TGT)"
   exit 1
 fi
 
 # extract raspbian image
-IMG="/tmp/$(unzip -l $DL_TGT | head -1)"
-
-unzip $DL_TGT -d /tmp
+echo "unzipping to $IMG..."
+unzip -b $DL_TGT -d $TMPDIR
+echo "Done!"
 
 # extend raspbian image by 1gb
 dd if=/dev/zero bs=1M count=1024 >> $IMG
@@ -87,7 +93,7 @@ losetup -d /dev/loop0
 
 
 # Now that we have the image working, copy it to the device
-if mount | greq -q "$DEVICE"
+if mount | grep -q "$DEVICE"
 then
   echo >&2 "$DEVICE appears to be mounted; aborting"
   exit 1
@@ -104,7 +110,7 @@ dd bs=4M if="$IMG" of="$DEVICE" status=progress
 sync
 
 # Check correctness...
-TESTABLE=/tmp/from-sd-card.img
+TESTABLE=$TMPDIR/from-sd-card.img
 dd bs=4M if="$DEVICE" of="$TESTABLE"
 truncate --reference "$IMG" "$TESTABLE"
 diff -s "$IMG" "$TESTABLE"
