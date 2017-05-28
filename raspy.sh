@@ -53,7 +53,7 @@ dd if=/dev/zero bs=1M count=1024 >> $IMG
 sync
 
 # set up image as loop device
-sudo losetup /dev/loop0 $IMG
+sudo losetup -P /dev/loop0 $IMG
 
 # check file system
 sudo e2fsck -f /dev/loop0p2
