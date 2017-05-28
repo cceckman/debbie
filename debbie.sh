@@ -261,6 +261,7 @@ sudo apt-get -y install \
   traceroute \
   vim \
   vim-gtk \
+  vlc \
   xbacklight \
   xclip \
   xorg \
