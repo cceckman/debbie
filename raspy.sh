@@ -80,6 +80,11 @@ sudo cp dessert.sh /mnt/usr/bin
 
 # chroot to raspbian & run setup script
 sudo chroot /mnt /bin/bash -c dessert.sh
+# Add SSH keys
+for f in $HOME/.ssh/*.pub
+do
+  cat $f | sudo chroot /mnt cat - >>/home/$USER/.ssh/authorized_keys
+done
 
 # revert ld.so.preload fix
 sudo sed -i 's/^#//g' /mnt/etc/ld.so.preload
