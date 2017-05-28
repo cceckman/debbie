@@ -1,11 +1,9 @@
-#! /bin/sh -e
+#! /bin/sh -ex
 # Raspberry Pi setup tool; runs on the host.
 
 # Sources:
 # https://gist.github.com/jkullick/9b02c2061fbdf4a6c4e8a78f1312a689
 # https://wiki.debian.org/RaspberryPi/qemu-user-static
-
-set -e
 
 DEVICE="$1"
 TMPDIR="$HOME/tmp/"
@@ -52,6 +50,7 @@ echo "Done!"
 
 # extend raspbian image by 1gb
 dd if=/dev/zero bs=1M count=1024 >> $IMG
+sync
 
 # set up image as loop device
 sudo losetup /dev/loop0 $IMG
