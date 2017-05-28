@@ -79,7 +79,7 @@ sudo cp /usr/bin/qemu-arm-static /mnt/usr/bin/
 sudo cp dessert.sh /mnt/usr/bin
 
 # chroot to raspbian & run setup script
-sudo chroot /mnt /bin/bash -c dessert.sh
+sudo chroot /mnt /bin/bash -c dessert.sh $USER
 # Add SSH keys
 for f in $HOME/.ssh/*.pub
 do

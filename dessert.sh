@@ -4,7 +4,7 @@
 
 # To start off with: add a non-root user, turn off 'pi', turn off 'root'.
 
-NEWUSER="$USER"
+NEWUSER="$1"
 
 
 sudo adduser $NEWUSER
