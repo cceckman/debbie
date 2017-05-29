@@ -5,9 +5,7 @@ Configure a Debian / Ubuntu (apt) machine to my liking.
 From a Debian or Ubuntu image:
 
 ```
-sh <(curl -L https://raw.githubusercontent.com/cceckman/debbie/master/debbie.sh)
+sh <(curl -L https://cceckman.com/s/debbie)
 ```
 
-Yes, yes, I should shorten that; but right now cceckman.com doesn't have a cert.
-So, yes, I'm being unsafe by piping commands to a shell... but at least it's
-through HTTPS.
+Yes, I'm being unsafe by piping commands to a shell... but at least it's through HTTPS.
