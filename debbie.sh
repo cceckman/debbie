@@ -59,7 +59,8 @@ sudo apt-get -y upgrade
 
 # Set locale to US.
 sudo apt-get install debconf
-sudo dpkg-reconfigure locales
+sudo sed -i -e 's/^[^#]/# \0/' -e 's/^.*\(en_US.UTF-8\)/\1/' /etc/locale.gen
+sudo /usr/sbin/locale-gen
 
 # Want a more recent kernel?
 if { uname -r | grep -q '^[^4]'; } && yesno "Would you like to update to a 4.X kernel?"
