@@ -57,6 +57,10 @@ sudo apt-get update
 # Bring everything up to date from the base image.
 sudo apt-get -y upgrade
 
+# Set locale to US.
+sudo apt-get install debconf
+sudo dpkg-reconfigure locales
+
 # Want a more recent kernel?
 if { uname -r | grep -q '^[^4]'; } && yesno "Would you like to update to a 4.X kernel?"
 then
@@ -212,7 +216,6 @@ case "$(uname -v)" in
 esac
 # Missing:
 # - bd not available in Ubuntu 16.04, so don't include it anywhere.
-    
 
 # Load packages. This eats a little more than 1GB, all told.
 sudo apt-get -y install \
@@ -285,7 +288,7 @@ sudo chsh -s $(which zsh) $USER
 GO_VERSION="1.8.1"
 if ! which go || ! go version | grep "$GO_VERSION"
 then
-  sudo rm -rf /user/local/go
+  sudo rm -rf /usr/local/go
   {
     GOTAR=/tmp/golang.tar.gz
     curl -o $GOTAR https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz \
