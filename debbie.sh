@@ -250,7 +250,7 @@ sudo apt-get -y install \
   network-manager \
   ninja-build \
   ntfs-3g \
-  open-vm-tools \
+  open-vm-tools-dkms \
   parallel \
   parted \
   pkg-config \
