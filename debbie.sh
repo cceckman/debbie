@@ -56,7 +56,7 @@ done
 # Set locale to US.
 sudo sed -i -e 's/^[^#]/# \0/' -e 's/^.*\(en_US.UTF-8\)/\1/' /etc/locale.gen
 sudo /usr/sbin/locale-gen
-
+echo 'LANG=en_US.UTF-8' | sudo tee /etc/locale.conf
 
 sudo apt-get update
 # Bring everything up to date from the base image.
