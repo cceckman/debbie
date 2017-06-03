@@ -56,8 +56,6 @@ done
 # Set locale to US.
 sudo sed -i -e 's/^[^#]/# \0/' -e 's/^.*\(en_US.UTF-8\)/\1/' /etc/locale.gen
 sudo /usr/sbin/locale-gen
-echo 'LANG=en_US.UTF-8' | sudo tee /etc/locale.conf
-
 sudo apt-get update
 # Bring everything up to date from the base image.
 sudo apt-get -y upgrade
@@ -107,8 +105,8 @@ HRD
         --data-binary @$keyreq \
         -u ${USER}:${token} \
         https://api.github.com/user/keys \
-      && { echo "Upload successful!"; break; } 
-    } || { 
+      && { echo "Upload successful!"; break; }
+    } || {
       echo "Didn't upload Github key! "
       if ! yesno "Retry?"
       then
@@ -223,7 +221,6 @@ sudo apt-get -y install \
   arping \
   autoconf \
   bash \
-  bazel \
   bc \
   cgmanager \
   clang \
@@ -281,6 +278,19 @@ sudo apt-get -y install \
   echo "Package install failed with exit code: $x"
   exit $x
 }
+
+# Packages to soft-fail on
+sudo apt-get -y install \
+  bazel \
+  ${more_pkgs} \
+ || {
+  x=$?
+  echo "Package install failed with exit code: $x"
+  echo "Continuing regardless..."
+  sleep 5
+}
+
+
 
 # Set default shell.
 sudo chsh -s $(which zsh) $USER
