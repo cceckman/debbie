@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/sh -x
 # Set up a Debian / Ubuntu machine to my liking.
 # Put it all in a single file, so that it can be curl'd.
 
@@ -226,7 +226,6 @@ sudo apt-get -y install \
   clang \
   cmatrix \
   devscripts \
-  docker-engine \
   dosfstools \
   feh \
   fping \
@@ -282,15 +281,20 @@ sudo apt-get -y install \
 # Packages to soft-fail on
 sudo apt-get -y install \
   bazel \
-  ${more_pkgs} \
  || {
-  x=$?
-  echo "Package install failed with exit code: $x"
+  echo "Package install failed with exit code: $?"
   echo "Continuing regardless..."
   sleep 5
 }
 
-
+sudo apt-get -y install \
+  docker-engine \
+  || {
+  echo "Docker install exited with code $?"
+  echo "Using less safe method..."
+  curl -sSL https://get.docker.com | sh
+  sleep 5
+}
 
 # Set default shell.
 sudo chsh -s $(which zsh) $USER
