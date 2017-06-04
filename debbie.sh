@@ -19,7 +19,7 @@ yesno() {
   fi
 
   read result
-  echo -n "$result" | grep -q '^[yY]'
+  echo -n "$result" | grep -q '[yY]'
   return $?
 }
 
