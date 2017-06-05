@@ -262,6 +262,7 @@ sudo apt-get -y install \
   vim \
   vim-gtk \
   vlc \
+  whois \
   xbacklight \
   xclip \
   xorg \
