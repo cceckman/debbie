@@ -321,7 +321,8 @@ fi
 if ! which ctags
 then
   # Manually install universal ctags
-  pushd /tmp/
+  LPUSHD="$(pwd)"
+  cd /tmp/
   git clone git://github.com/universal-ctags/ctags && \
     ./autogen.sh && \
     ./configure && \
@@ -332,7 +333,7 @@ then
     echo $x
   }
 
-  popd
+  cd "$LPUSHD"
 fi
 
 # Manually install rust via rustup.
