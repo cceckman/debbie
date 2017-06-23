@@ -259,6 +259,7 @@ sudo apt-get -y install \
   tcpdump \
   tmux \
   traceroute \
+  urxvt \
   vim \
   vim-gtk \
   vlc \
