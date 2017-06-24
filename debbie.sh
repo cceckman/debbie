@@ -122,6 +122,7 @@ HRD
       fi
     }
   done
+  sleep 10 # error budget for Github to catch new keys.
 else
   echo "OK, skipping new SSH credentials..."
 fi
