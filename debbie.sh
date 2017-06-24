@@ -344,9 +344,8 @@ fi
 
 # TODO: remote GUI tools
 
-
-# One-time setup scripts
-$HOME/scripts/install-wallpapertab.sh
+# One-time setup scripts... don't always run.
+# $HOME/scripts/install-wallpapertab.sh
 
 # echo "If you're going to use this with a Macbook, you probably want to look at:"
 # echo "http://askubuntu.com/questions/530325/tilde-key-on-mac-air-with-ubuntu"
