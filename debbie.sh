@@ -323,7 +323,8 @@ then
     && sh autogen.sh \
     && ./configure \
     && make \
-    && sudo make install
+    && sudo make install \
+    && sudo apt-get -y remove tmux
   cd $LDIR
 fi
 
