@@ -22,6 +22,12 @@ yesno() {
   echo -n "$result" | grep -q '[yY]'
   return $?
 }
+# Version greater-than-or-equal-to:
+# https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
+vergte() {
+  lesser="$(echo -e "$1\n$2" | sort -V | head -n1)"
+  [ "$1" = "$lesser" ]
+}
 
 # Header: required tools.
 tools="apt-get apt-key cat curl hostname ssh-keygen sudo tee which lsb_release grep"
@@ -303,8 +309,8 @@ sudo apt-get -y install \
 sudo chsh -s $(which zsh) $USER
 
 # Manually install Go, since the mainline repos aren't up-to-date.
-GO_VERSION="1.8.3"
-if ! which go || ! go version | grep "$GO_VERSION"
+GO_VERSION="go version go1.8.3 linux/amd64"
+if ! which go || ! vergte "$GO_VERSION" "$(go version)"
 then
   sudo rm -rf /usr/local/go
   {
