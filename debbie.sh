@@ -325,6 +325,7 @@ then
   # Manually install universal ctags
   LPUSHD="$(pwd)"
   cd /tmp/
+  rm -rf ctags
   git clone git://github.com/universal-ctags/ctags && \
     cd ctags && \
     ./autogen.sh && \
