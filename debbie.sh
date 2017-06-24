@@ -319,6 +319,7 @@ then
     && cd /tmp \
     && tar -xvf $TMUXTAR \
     && cd tmux-$TMUX_VNO \
+    && sh autogen.sh \
     && ./configure \
     && make \
     && sudo make install
