@@ -61,18 +61,19 @@ sudo apt-get update
 sudo apt-get -y upgrade
 
 # Want a more recent kernel?
-if { uname -r | grep -q '^[^4]'; } && yesno "Would you like to update to a 4.X kernel?"
-then
-  {
-  sudo apt-get -y install -t jessie-backports \
-    linux-image-amd64 \
-    linux-headers-amd64 \
-    linux-image-extra \
-    dkms \
-    virtualbox-guest-dkms \
-    broadcom-sta-dkms
-  }
-fi
+# Great- upgrade from Jessie!
+# if { uname -r | grep -q '^[^4]'; } && yesno "Would you like to update to a 4.X kernel?"
+# then
+#   {
+#   sudo apt-get -y install -t jessie-backports \
+#     linux-image-amd64 \
+#     linux-headers-amd64 \
+#     linux-image-extra \
+#     dkms \
+#     virtualbox-guest-dkms \
+#     broadcom-sta-dkms
+#   }
+# fi
 
 
 # Get git
@@ -194,7 +195,7 @@ fi
 # Docker
 sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 \
   --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-echo "deb https://apt.dockerproject.org/repo debian-jessie main" | sudo tee /etc/apt/sources.list.d/docker.list
+echo "deb https://apt.dockerproject.org/repo debian-stretch main" | sudo tee /etc/apt/sources.list.d/docker.list
 
 # Docker group setup
 sudo groupadd docker
