@@ -302,7 +302,7 @@ sudo apt-get -y install \
 sudo chsh -s $(which zsh) $USER
 
 # Manually install Go, since the mainline repos aren't up-to-date.
-GO_VERSION="1.8.1"
+GO_VERSION="1.8.3"
 if ! which go || ! go version | grep "$GO_VERSION"
 then
   sudo rm -rf /usr/local/go
