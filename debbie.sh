@@ -326,7 +326,7 @@ then
   LPUSHD="$(pwd)"
   cd /tmp/
   git clone git://github.com/universal-ctags/ctags && \
-    cd ctags \
+    cd ctags && \
     ./autogen.sh && \
     ./configure && \
     make && \
