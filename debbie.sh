@@ -254,12 +254,12 @@ sudo apt-get -y install \
   python-gflags \
   redshift \
   rsync \
+  rxvt-unicode \
   screen \
   ssh \
   tcpdump \
   tmux \
   traceroute \
-  urxvt \
   vim \
   vim-gtk \
   vlc \
