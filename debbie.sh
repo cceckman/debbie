@@ -308,6 +308,23 @@ sudo apt-get -y install \
 # Set default shell.
 sudo chsh -s $(which zsh) $USER
 
+# Manually install tmux, since the mainline repos aren't up-to-date.
+TMUX_VNO="2.4"
+TMUX_VERSION="tmux $TMUX_VNO"
+if ! which tmux || ! vergte "$TMUX_VERSION" "$(tmux -V)"
+then
+  LDIR="$(pwd)"
+  TMUXTAR=/tmp/tmux.tar.gz
+  curl -Lo $TMUXTAR https://github.com/tmux/tmux/archive/${TMUX_VNO}.tar.gz \
+    && cd /tmp \
+    && tar -xvf $TMUXTAR \
+    && cd tmux-$TMUX_VNO \
+    && ./configure \
+    && make \
+    && sudo make install
+  cd $LDIR
+fi
+
 # Manually install Go, since the mainline repos aren't up-to-date.
 GO_VERSION="go version go1.8.3 linux/amd64"
 if ! which go || ! vergte "$GO_VERSION" "$(go version)"
