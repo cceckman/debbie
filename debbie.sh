@@ -324,7 +324,8 @@ then
     && ./configure \
     && make \
     && sudo make install \
-    && sudo apt-get -y remove tmux
+    && sudo apt-get -y remove tmux \
+    && rm -rf /tmp/tmux*
   cd $LDIR
 fi
 
@@ -336,7 +337,8 @@ then
   {
     GOTAR=/tmp/golang.tar.gz
     curl -o $GOTAR https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz \
-    && sudo tar -C /usr/local -xzf $GOTAR
+    && sudo tar -C /usr/local -xzf $GOTAR \
+    && rm $GOTAR
   } || {
     x=$?
     echo "Go tools install failed with exit code: $x"
@@ -352,12 +354,14 @@ then
   LPUSHD="$(pwd)"
   cd /tmp/
   rm -rf ctags
-  git clone git://github.com/universal-ctags/ctags && \
-    cd ctags && \
-    ./autogen.sh && \
-    ./configure && \
-    make && \
-    sudo make install || {
+  git clone git://github.com/universal-ctags/ctags \
+    && cd ctags \
+    && ./autogen.sh\
+    && ./configure \
+    && make \
+    && sudo make install \
+    && rm -rf /tmp/ctags \
+    || {
     x=$?
     echo "Failed to install universal ctags!" 1>&2
     echo $x
