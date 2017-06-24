@@ -315,7 +315,8 @@ if ! which tmux || ! vergte "$TMUX_VERSION" "$(tmux -V)"
 then
   LDIR="$(pwd)"
   TMUXTAR=/tmp/tmux.tar.gz
-  curl -Lo $TMUXTAR https://github.com/tmux/tmux/archive/${TMUX_VNO}.tar.gz \
+  sudo apt-get -y install libevent-dev \
+    && curl -Lo $TMUXTAR https://github.com/tmux/tmux/archive/${TMUX_VNO}.tar.gz \
     && cd /tmp \
     && tar -xvf $TMUXTAR \
     && cd tmux-$TMUX_VNO \
