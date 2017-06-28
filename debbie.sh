@@ -137,6 +137,8 @@ git config --global status.showUntrackedFiles no
 # Automatically recurse into submodules when pulling.
 # Makes some of the stuff in update-repos redundant, but that's okay.
 git config --global alias.pullall '!f(){ git pull "$@" && git submodule update --init --recursive; }; f'
+git config --global diff.tool vimdiff
+git config --global merge.tool vimdiff
 
 # Set Github public key.
 mkdir ~/.ssh
