@@ -248,6 +248,7 @@ sudo apt-get -y install \
   irssi \
   kubectl \
   libanyevent-i3-perl \
+  libnotify-bin \
   lldb \
   llvm \
   make \
