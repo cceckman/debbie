@@ -338,6 +338,7 @@ fi
 GO_VERSION="1.8.3"
 if ! which go || ! vergte "go version go$GO_VERSION" "$(go version)"
 then
+  sudo apt-get remove golang-1.8 golang-1.7 golang-1.6
   sudo rm -rf /usr/local/go
   {
     GOTAR=/tmp/golang.tar.gz
