@@ -335,8 +335,8 @@ then
 fi
 
 # Manually install Go, since the mainline repos aren't up-to-date.
-GO_VERSION="go version go1.8.3 linux/amd64"
-if ! which go || ! vergte "$GO_VERSION" "$(go version)"
+GO_VERSION="1.8.3"
+if ! which go || ! vergte "go version go$GO_VERSION" "$(go version)"
 then
   sudo rm -rf /usr/local/go
   {
