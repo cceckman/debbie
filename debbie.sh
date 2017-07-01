@@ -317,6 +317,7 @@ TMUX_VNO="2.4"
 TMUX_VERSION="tmux $TMUX_VNO"
 if ! which tmux || ! vergte "$TMUX_VERSION" "$(tmux -V)"
 then
+  sudo apt-get install libncurses5-dev
   LDIR="$(pwd)"
   TMUXTAR=/tmp/tmux.tar.gz
   sudo apt-get -y install libevent-dev \
