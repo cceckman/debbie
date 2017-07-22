@@ -282,7 +282,6 @@ sudo apt-get -y install \
   xorg \
   xscreensaver \
   xscreensaver-data-extra \
-  xss-lock \
   xterm \
   zip \
   zsh \
