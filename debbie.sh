@@ -250,6 +250,7 @@ sudo apt-get -y install \
   irssi \
   kubectl \
   libanyevent-i3-perl \
+  libnotify-bin \
   lldb \
   llvm \
   make \
@@ -318,6 +319,7 @@ TMUX_VNO="2.4"
 TMUX_VERSION="tmux $TMUX_VNO"
 if ! which tmux || ! vergte "$TMUX_VERSION" "$(tmux -V)"
 then
+  sudo apt-get install libncurses5-dev
   LDIR="$(pwd)"
   TMUXTAR=/tmp/tmux.tar.gz
   sudo apt-get -y install libevent-dev \
@@ -335,9 +337,10 @@ then
 fi
 
 # Manually install Go, since the mainline repos aren't up-to-date.
-GO_VERSION="go version go1.8.3 linux/amd64"
-if ! which go || ! vergte "$GO_VERSION" "$(go version)"
+GO_VERSION="1.8.3"
+if ! which go || ! vergte "go version go$GO_VERSION" "$(go version)"
 then
+  sudo apt-get remove golang-1.8 golang-1.7 golang-1.6
   sudo rm -rf /usr/local/go
   {
     GOTAR=/tmp/golang.tar.gz
