@@ -248,6 +248,7 @@ sudo apt-get -y install \
   imagemagick \
   ipcalc \
   irssi \
+  jq \
   kubectl \
   libanyevent-i3-perl \
   libnotify-bin \
