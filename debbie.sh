@@ -237,6 +237,7 @@ sudo apt-get -y install \
   clang \
   cmatrix \
   devscripts \
+  dnsutils \
   dosfstools \
   feh \
   fping \
