@@ -59,6 +59,8 @@ do
   fi
 done
 
+sudo apt-get install locales
+
 # Set locale to US.
 sudo sed -i -e 's/^[^#]/# \0/' -e 's/^.*\(en_US.UTF-8\)/\1/' /etc/locale.gen
 sudo /usr/sbin/locale-gen
