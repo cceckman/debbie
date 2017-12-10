@@ -338,10 +338,10 @@ then
 fi
 
 # Manually install Go, since the mainline repos aren't up-to-date.
-GO_VERSION="1.8.3"
+GO_VERSION="1.9.2"
 if ! which go || ! vergte "go version go$GO_VERSION" "$(go version)"
 then
-  sudo apt-get remove golang-1.8 golang-1.7 golang-1.6
+  sudo apt-get remove golang-1.9 golang-1.8 golang-1.7
   sudo rm -rf /usr/local/go
   {
     GOTAR=/tmp/golang.tar.gz
