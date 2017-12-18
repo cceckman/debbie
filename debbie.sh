@@ -231,6 +231,7 @@ esac
 
 # Load packages. This eats a little more than 1GB, all told.
 sudo apt-get -y install \
+  acpi \
   arping \
   autoconf \
   bash \
