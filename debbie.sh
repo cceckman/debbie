@@ -283,6 +283,7 @@ sudo apt-get -y install \
   vim \
   vim-gtk \
   vlc \
+  wireshark \
   whois \
   xbacklight \
   xclip \
