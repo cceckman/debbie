@@ -263,6 +263,7 @@ sudo apt-get -y install \
   make \
   mlocate \
   mtr \
+  net-tools \
   network-manager \
   ninja-build \
   ntfs-3g \
