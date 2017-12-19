@@ -371,7 +371,8 @@ then
     HELMTAR="/tmp/helm.tar.gz"
     curl -o "$HELMTAR" https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz \
     && tar -C /tmp -zxvf $HELMTAR linux-amd64/helm \
-    && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
+    && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm \
+    && helm init -c 
   } || {
     x=$?
     echo >&2 "Helm install failed with exit code: $x"
