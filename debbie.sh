@@ -363,6 +363,22 @@ else
   echo "Go appears to be up to date."
 fi
 
+# Manually install Helm, since there aren't repositoried packages.
+HELM_VERSION="2.7.2"
+if ! which helm || ! vergte "$HELM_VERSION" "$(helm version -c --short)"
+then
+  {
+    HELMTAR="/tmp/helm.tar.gz"
+    curl -o "$HELMTAR" https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz \
+    && tar -C /tmp -zxvf $HELMTAR linux-amd64/helm \
+    && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
+  } || {
+    x=$?
+    echo >&2 "Helm install failed with exit code: $x"
+    exit $x
+  }
+fi
+
 if ! which ctags
 then
   # Manually install universal ctags
