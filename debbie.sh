@@ -25,7 +25,9 @@ yesno() {
 # Version greater-than-or-equal-to:
 # https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
 vergte() {
-  lesser="$(echo -e "$1\n$2" | sort -V | head -n1)"
+  vA="$(echo $1 | grep -o '[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?')"
+  vB="$(echo $2 | grep -o '[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?')"
+  lesser="$(echo -e "${vA}\n${vB}" | sort -V | head -n1)"
   [ "$1" = "$lesser" ]
 }
 
@@ -320,8 +322,7 @@ sudo chsh -s $(which zsh) $USER
 
 # Manually install tmux, since the mainline repos aren't up-to-date.
 TMUX_VNO="2.4"
-TMUX_VERSION="tmux $TMUX_VNO"
-if ! which tmux || ! vergte "$TMUX_VERSION" "$(tmux -V)"
+if ! which tmux || ! vergte "$TMUX_VNO" "$(tmux -V)"
 then
   sudo apt-get install libncurses5-dev
   LDIR="$(pwd)"
@@ -342,13 +343,14 @@ fi
 
 # Manually install Go, since the mainline repos aren't up-to-date.
 GO_VERSION="1.9.2"
-if ! which go || ! vergte "go version go$GO_VERSION" "$(go version)"
+if (! which go && ! test -x /usr/local/go/bin/go) || \
+  ! vergte "$GO_VERSION" "$(go version)"
 then
-  sudo apt-get remove golang-1.9 golang-1.8 golang-1.7
-  sudo rm -rf /usr/local/go
   {
     GOTAR=/tmp/golang.tar.gz
     curl -o $GOTAR https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz \
+    && sudo apt-get remove golang-1.9 golang-1.8 golang-1.7 \
+    && sudo rm -rf /usr/local/go \
     && sudo tar -C /usr/local -xzf $GOTAR \
     && rm $GOTAR
   } || {
