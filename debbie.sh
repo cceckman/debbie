@@ -364,6 +364,9 @@ else
   echo "Go appears to be up to date."
 fi
 
+# Go get go tools
+go get github.com/derekparker/delve/cmd/dlv
+
 # Manually install Helm, since there aren't repositoried packages.
 HELM_VERSION="2.7.2"
 if ! which helm || ! vergte "$HELM_VERSION" "$(helm version -c --short)"
