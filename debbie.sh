@@ -143,7 +143,7 @@ git config --global status.showUntrackedFiles no
 git config --global alias.pullall '!f(){ git pull "$@" && git submodule update --init --recursive; }; f'
 git config --global diff.tool vimdiff
 git config --global merge.tool vimdiff
-git config --global --add difftool.prompt false
+git config --global difftool.prompt false
 
 # Set Github public key.
 mkdir ~/.ssh
