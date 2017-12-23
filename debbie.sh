@@ -365,8 +365,9 @@ else
 fi
 
 # Go get go tools
-go get github.com/derekparker/delve/cmd/dlv
-go get github.com/github/hub
+go get -u github.com/derekparker/delve/cmd/dlv
+go get -u github.com/github/hub
+go get -u github.com/golang/dep
 
 # Manually install Helm, since there aren't repositoried packages.
 HELM_VERSION="2.7.2"
