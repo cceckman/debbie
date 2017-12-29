@@ -349,9 +349,9 @@ if (! which go && ! test -x /usr/local/go/bin/go) || \
   ! vergte "$GO_VERSION" "$(go version)"
 then
   {
+    sudo apt-get remove golang-1.9 golang-1.8 golang-1.7
     GOTAR=/tmp/golang.tar.gz
     curl -o $GOTAR https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz \
-    && sudo apt-get remove golang-1.9 golang-1.8 golang-1.7 \
     && sudo rm -rf /usr/local/go \
     && sudo tar -C /usr/local -xzf $GOTAR \
     && rm $GOTAR
