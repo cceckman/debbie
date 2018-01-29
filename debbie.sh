@@ -253,7 +253,6 @@ sudo apt-get -y install \
   i3 \
   imagemagick \
   ipcalc \
-  irssi \
   jq \
   kubectl \
   libanyevent-i3-perl \
@@ -284,8 +283,9 @@ sudo apt-get -y install \
   vim \
   vim-gtk \
   vlc \
-  wireshark \
+  weechat weechat-doc weechat-scripts \
   whois \
+  wireshark \
   xbacklight \
   xclip \
   xorg \
