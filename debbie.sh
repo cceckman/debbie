@@ -283,7 +283,6 @@ sudo apt-get -y install \
   vim \
   vim-gtk \
   vlc \
-  weechat weechat-doc weechat-scripts \
   whois \
   wireshark \
   xbacklight \
@@ -323,7 +322,7 @@ sudo apt-get -y install \
 sudo chsh -s $(which zsh) $USER
 
 # Manually install tmux, since the mainline repos aren't up-to-date.
-TMUX_VNO="2.4"
+TMUX_VNO="2.6"
 if ! which tmux || ! vergte "$TMUX_VNO" "$(tmux -V)"
 then
   sudo apt-get install libncurses5-dev
@@ -341,6 +340,27 @@ then
     && sudo apt-get -y remove tmux \
     && rm -rf /tmp/tmux*
   cd $LDIR
+fi
+
+# Manually install weechat, likewise.
+WEECHAT_VNO="2.0"
+if ! which weechat || ! vergte "$VNO" "$(weechat --version)"
+then
+ LDIR="$(pwd)"
+ WCTAR=/tmp/weechat.tar.gz
+ sudo apt-get remove weechat
+ rm -rf /tmp/build /tmp/weechat-*
+ sudo apt-get build-dep weechat \
+   && curl -Lo $WCTAR https://github.com/weechat/weechat/archive/v2.0.1.tar.gz \
+   && cd /tmp \
+   && tar -xvf $WCTAR \
+   && cd weechat-${WEECAT_VNO}* \
+   && mkdir build \
+   && cd build \
+   && cmake .. \
+   && make \
+   && sudo make install
+ cd $LDIR
 fi
 
 # Manually install Go, since the mainline repos aren't up-to-date.
