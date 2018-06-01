@@ -251,6 +251,7 @@ sudo apt-get -y install \
   graphviz \
   haskell-platform \
   i3 \
+  i3status \
   imagemagick \
   ipcalc \
   jq \
