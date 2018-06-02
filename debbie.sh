@@ -440,7 +440,8 @@ fi
 
 # echo "If you're going to use this with a Macbook, you probably want to look at:"
 # echo "http://askubuntu.com/questions/530325/tilde-key-on-mac-air-with-ubuntu"
-
-echo "All done! Reboot to finish up."
+# Trigger GoInstallBinaries in Vim
+echo "All done! Log in or reboot to finish up." \
+  | vim -c ":GoInstallBinaries"
 
 cd $PUSHD
