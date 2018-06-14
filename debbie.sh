@@ -249,10 +249,8 @@ sudo apt-get -y install \
   gdb \
   google-cloud-sdk \
   graphviz \
-  haskell-platform \
   i3 \
   i3status \
-  imagemagick \
   ipcalc \
   jq \
   kubectl \
@@ -265,7 +263,6 @@ sudo apt-get -y install \
   mtr \
   net-tools \
   network-manager \
-  ninja-build \
   ntfs-3g \
   open-vm-tools-dkms \
   parallel \
@@ -275,15 +272,12 @@ sudo apt-get -y install \
   python-gflags \
   redshift \
   rsync \
-  rxvt-unicode \
-  screen \
   ssh \
   tcpdump \
   tmux \
   traceroute \
   vim \
   vim-gtk \
-  vlc \
   whois \
   wireshark \
   xbacklight \
