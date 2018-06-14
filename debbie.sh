@@ -317,7 +317,7 @@ sudo apt-get -y install \
 sudo chsh -s $(which zsh) $USER
 
 # Manually install tmux, since the mainline repos aren't up-to-date.
-TMUX_VNO="2.6"
+TMUX_VNO="2.7"
 if ! which tmux || ! vergte "$TMUX_VNO" "$(tmux -V)"
 then
   sudo apt-get install libncurses5-dev
@@ -338,7 +338,7 @@ then
 fi
 
 # Manually install weechat, likewise.
-WEECHAT_VNO="2.0"
+WEECHAT_VNO="2.1"
 if ! which weechat || ! vergte "$VNO" "$(weechat --version)"
 then
  LDIR="$(pwd)"
@@ -359,7 +359,7 @@ then
 fi
 
 # Manually install Go, since the mainline repos aren't up-to-date.
-GO_VERSION="1.9.2"
+GO_VERSION="1.10.3"
 if (! which go && ! test -x /usr/local/go/bin/go) || \
   ! vergte "$GO_VERSION" "$(go version)"
 then
@@ -386,7 +386,7 @@ go get -u github.com/golang/dep/cmd/dep
 go get -u github.com/bazelbuild/buildtools/buildifier
 
 # Manually install Helm, since there aren't repositoried packages.
-HELM_VERSION="2.7.2"
+HELM_VERSION="2.9.1"
 if ! which helm || ! vergte "$HELM_VERSION" "$(helm version -c --short)"
 then
   {
