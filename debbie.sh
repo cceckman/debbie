@@ -262,7 +262,6 @@ sudo apt-get -y install \
   mlocate \
   mtr \
   net-tools \
-  network-manager \
   ntfs-3g \
   open-vm-tools-dkms \
   parallel \
