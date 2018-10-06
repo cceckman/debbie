@@ -165,7 +165,7 @@ if test "$ETCLONEHOME" = 'yes'
 then
   echo "Cloning Tilde repository..."
   {
-    git clone git@github.com:cceckman/Tilde.git Tilde 2>&1 || {
+    git clone https://github.com/cceckman/Tilde.git 2>&1 || {
       x=$?
       echo "Failed to clone Tilde! Exiting unhappily.,"
       exit $x
@@ -174,7 +174,9 @@ then
     mv Tilde/.git . \
     && rm -rf Tilde \
     && git reset --hard \
-    && git submodule update --recursive --init
+    && git submodule update --recursive --init \
+    && git remote set origin git@github.com:cceckman/Tilde.git \
+    && git remote set --push origin git@github.com:cceckman/Tilde.git \
   } || {
     x=$?
     echo "Failed to load Tilde into \$HOME!"
@@ -184,10 +186,6 @@ else
   echo "Skipping cloning Tilde..."
   touch $HOME/clone-skipped
 fi
-
-# Load any other "default" repositories.
-# Include this one- hey, if I'm using it, I probably want it cloned.
-$HOME/scripts/update-repos cceckman/debbie
 
 # Need this to use the other repositories...
 sudo apt-get -y install apt-transport-https
