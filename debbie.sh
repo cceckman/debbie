@@ -245,6 +245,7 @@ sudo apt-get -y install \
   dnsutils \
   dosfstools \
   feh \
+  fonts-powerline \
   fping \
   gdb \
   google-cloud-sdk \
