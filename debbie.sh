@@ -175,8 +175,7 @@ then
     && rm -rf Tilde \
     && git reset --hard \
     && git submodule update --recursive --init \
-    && git remote set origin git@github.com:cceckman/Tilde.git \
-    && git remote set --push origin git@github.com:cceckman/Tilde.git
+    && git remote set-url origin git@github.com:cceckman/Tilde.git
   } || {
     x=$?
     echo "Failed to load Tilde into \$HOME!"
