@@ -356,12 +356,12 @@ then
 fi
 
 # Manually install Go, since the mainline repos aren't up-to-date.
-GO_VERSION="1.10.3"
+GO_VERSION="1.11.2"
 if (! which go && ! test -x /usr/local/go/bin/go) || \
   ! vergte "$GO_VERSION" "$(go version)"
 then
   {
-    sudo apt-get remove golang-1.9 golang-1.8 golang-1.7
+    sudo apt-get remove golang-1.10
     GOTAR=/tmp/golang.tar.gz
     curl -o $GOTAR https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz \
     && sudo rm -rf /usr/local/go \
@@ -383,7 +383,7 @@ go get -u github.com/golang/dep/cmd/dep
 go get -u github.com/bazelbuild/buildtools/buildifier
 
 # Manually install Helm, since there aren't repositoried packages.
-HELM_VERSION="2.9.1"
+HELM_VERSION="2.11.0"
 if ! which helm || ! vergte "$HELM_VERSION" "$(helm version -c --short)"
 then
   {
