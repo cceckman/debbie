@@ -264,6 +264,7 @@ sudo apt-get -y install \
   open-vm-tools-dkms \
   parallel \
   parted \
+  pcscd \
   pkg-config \
   python \
   python-gflags \
@@ -283,6 +284,7 @@ sudo apt-get -y install \
   xscreensaver \
   xscreensaver-data-extra \
   xterm \
+  yubikey-personalization \
   zip \
   zsh \
   ${more_pkgs} \
