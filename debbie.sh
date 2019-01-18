@@ -137,24 +137,9 @@ else
   echo "OK, skipping new SSH credentials..."
 fi
 
-# Github now, presumably, has whatever keys we're using.
-# Set defaults:
-git config --global user.email "$(echo 'puneyrf@pprpxzna.pbz' | tr '[A-Za-z]' '[N-ZA-Mn-za-m]')"
-git config --global user.name "Charles Eckman"
-git config --global push.default simple
-git config --global status.showUntrackedFiles no
-# From https://stackoverflow.com/questions/4611512/is-there-a-way-to-make-git-pull-automatically-update-submodules
-# Automatically recurse into submodules when pulling.
-# Makes some of the stuff in update-repos redundant, but that's okay.
-git config --global alias.pullall '!f(){ git pull "$@" && git submodule update --init --recursive; }; f'
-git config --global diff.tool vimdiff
-git config --global merge.tool vimdiff
-git config --global difftool.prompt false
-
 # Set Github public key.
 mkdir -p ~/.ssh
 echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="  >> $HOME/.ssh/known_hosts
-
 
 # Clone Tilde.
 ETCLONEHOME='yes'
