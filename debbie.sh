@@ -2,6 +2,12 @@
 # Set up a Debian / Ubuntu machine to my liking.
 # Put it all in a single file, so that it can be curl'd.
 
+# Header: pinned versions.
+GO_VERSION="1.11.4"
+TMUX_VNO="2.8"
+WEECHAT_VNO="2.3"
+HELM_VERSION="2.11.0"
+
 # Header: common functions.
 prompt() {
   echo "$1"
@@ -316,7 +322,6 @@ sudo apt-get -y install \
 sudo chsh -s $(which zsh) $USER
 
 # Manually install tmux, since the mainline repos aren't up-to-date.
-TMUX_VNO="2.7"
 if ! which tmux || ! vergte "$TMUX_VNO" "$(tmux -V)"
 then
   sudo apt-get install libncurses5-dev
@@ -337,7 +342,6 @@ then
 fi
 
 # Manually install weechat, likewise.
-WEECHAT_VNO="2.1"
 if ! which weechat || ! vergte "$VNO" "$(weechat --version)"
 then
  LDIR="$(pwd)"
@@ -358,7 +362,6 @@ then
 fi
 
 # Manually install Go, since the mainline repos aren't up-to-date.
-GO_VERSION="1.11.2"
 if (! which go && ! test -x /usr/local/go/bin/go) || \
   ! vergte "$GO_VERSION" "$(go version)"
 then
@@ -385,7 +388,6 @@ go get -u github.com/golang/dep/cmd/dep
 go get -u github.com/bazelbuild/buildtools/buildifier
 
 # Manually install Helm, since there aren't repositoried packages.
-HELM_VERSION="2.11.0"
 if ! which helm || ! vergte "$HELM_VERSION" "$(helm version -c --short)"
 then
   {
