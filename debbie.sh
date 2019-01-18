@@ -371,6 +371,7 @@ go get -u github.com/derekparker/delve/cmd/dlv
 go get -u github.com/github/hub
 go get -u github.com/golang/dep/cmd/dep
 go get -u github.com/bazelbuild/buildtools/buildifier
+go get -u golang.org/x/tools/cmd/gopls
 
 # Manually install Helm, since there aren't repositoried packages.
 if ! which helm || ! vergte "$HELM_VERSION" "$(helm version -c --short)"
