@@ -263,7 +263,6 @@ sudo apt-get -y install \
   rsync \
   ssh \
   tcpdump \
-  tmux \
   traceroute \
   vim \
   vim-gtk \
