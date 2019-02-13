@@ -3,10 +3,10 @@
 # Put it all in a single file, so that it can be curl'd.
 
 # Header: pinned versions.
-GO_VERSION="1.11.4"
+GO_VERSION="1.11.5"
 TMUX_VNO="2.8"
 WEECHAT_VNO="2.3"
-HELM_VERSION="2.11.0"
+HELM_VERSION="2.12.3"
 
 # Header: common functions.
 prompt() {
