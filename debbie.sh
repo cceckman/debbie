@@ -259,6 +259,8 @@ sudo apt-get -y install \
   pkg-config \
   python \
   python-gflags \
+  python3 \
+  python3-pip \
   redshift \
   rsync \
   ssh \
@@ -281,6 +283,12 @@ sudo apt-get -y install \
  || {
   x=$?
   echo "Package install failed with exit code: $x"
+  exit $x
+}
+
+pip3 install yamllint || {
+  x=$?
+  echo "Could not install yamllint"
   exit $x
 }
 
