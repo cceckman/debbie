@@ -340,7 +340,7 @@ then
  WCTAR=/tmp/weechat.tar.gz
  sudo apt-get remove weechat
  rm -rf /tmp/build /tmp/weechat-*
- sudo apt-get build-dep weechat \
+ sudo apt-get build-dep -y weechat \
    && curl -Lo $WCTAR https://github.com/weechat/weechat/archive/v2.0.1.tar.gz \
    && cd /tmp \
    && tar -xvf $WCTAR \
