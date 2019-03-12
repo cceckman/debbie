@@ -379,6 +379,19 @@ go get -u github.com/bazelbuild/buildtools/buildifier
 go get -u github.com/derekparker/delve/cmd/dlv
 go get -u github.com/github/hub
 
+eval $(go env)
+if ! which ibazel && test -n "$GOPATH"
+then
+  # Manually install ibazel
+  LPUSHD="$(pwd)"
+  cd /tmp
+  rm -rf ibazel
+  git clone git://github.com/bazelbuild/bazel-watcher ibazel
+  cd ibazel
+  bazel build //ibazel
+  cp $PWD/bazel-bin/ibazel/${GOOS}_${GOARCH}_pure_stripped/ibazel $GOPATH/bin
+fi
+
 if ! which ctags
 then
   # Manually install universal ctags
