@@ -3,10 +3,9 @@
 # Put it all in a single file, so that it can be curl'd.
 
 # Header: pinned versions.
-GO_VERSION="1.11.5"
+GO_VERSION="1.12.4"
 TMUX_VNO="2.8"
-WEECHAT_VNO="2.3"
-HELM_VERSION="2.12.3"
+WEECHAT_VNO="2.4"
 
 # Header: common functions.
 prompt() {
@@ -220,7 +219,9 @@ esac
 # - bd not available in Ubuntu 16.04, so don't include it anywhere.
 
 # Load packages. This eats a little more than 1GB, all told.
-sudo apt-get -y install \
+sudo apt-get \
+  --no-install-recommends \
+  -y install \
   acpi \
   arping \
   autoconf \
@@ -252,7 +253,6 @@ sudo apt-get -y install \
   mtr \
   net-tools \
   ntfs-3g \
-  open-vm-tools-dkms \
   parallel \
   parted \
   pcscd \
@@ -264,6 +264,7 @@ sudo apt-get -y install \
   redshift \
   rsync \
   ssh \
+  scdaemon \
   tcpdump \
   traceroute \
   vim \
@@ -275,6 +276,7 @@ sudo apt-get -y install \
   xorg \
   xscreensaver \
   xscreensaver-data-extra \
+  xss-lock \
   xterm \
   yubikey-personalization \
   zip \
