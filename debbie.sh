@@ -428,6 +428,10 @@ then
   cd "$LPUSHD"
 fi
 
+gpg --recv-keys \
+  --keyserver pool.sks-keyservers.net \
+  03AC4FAAB64FE9EE195E90C93949B487F3C98967
+
 # Manually install rust via rustup.
 # curl https://sh.rustup.sh -sSf | sh
 
