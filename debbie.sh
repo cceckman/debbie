@@ -6,6 +6,7 @@
 GO_VERSION="1.12.4"
 TMUX_VNO="2.8"
 WEECHAT_VNO="2.4"
+GETDOCKER="false"
 
 # Header: common functions.
 prompt() {
@@ -151,6 +152,11 @@ then
   fi
 fi
 
+if ! which docker 2>&1 >/dev/null && yesno "Install Docker?"
+then
+	GETDOCKER="true"
+fi
+
 if test "$ETCLONEHOME" = 'yes'
 then
   echo "Cloning Tilde repository..."
@@ -194,15 +200,18 @@ then
 fi
 
 # Docker
-sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 \
-  --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-echo "deb https://apt.dockerproject.org/repo debian-stretch main" | sudo tee /etc/apt/sources.list.d/docker.list
+if $GETDOCKER
+then
+	sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 \
+	  --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+	echo "deb https://apt.dockerproject.org/repo debian-stretch main" | sudo tee /etc/apt/sources.list.d/docker.list
 
-# Docker group setup
-sudo groupadd docker
-sudo gpasswd -a ${USER} docker
+	# Docker group setup
+	sudo groupadd docker
+	sudo gpasswd -a ${USER} docker
 
-sudo apt-get update
+	sudo apt-get update
+fi
 
 # Packages that are different on Debian vs. Ubuntu.
 
@@ -303,14 +312,17 @@ sudo apt-get -y install \
   sleep 5
 }
 
-sudo apt-get -y install \
-  docker-engine \
-  || {
-  echo "Docker install exited with code $?"
-  echo "Using less safe method..."
-  curl -sSL https://get.docker.com | sh
-  sleep 5
-}
+if $GETDOCKER
+then
+	sudo apt-get -y install \
+	  docker-engine \
+	  || {
+	  echo "Docker install exited with code $?"
+	  echo "Using less safe method..."
+	  curl -sSL https://get.docker.com | sh
+	  sleep 5
+	}
+fi
 
 # Set default shell.
 sudo chsh -s $(which zsh) $USER
