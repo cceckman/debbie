@@ -3,8 +3,8 @@
 # Put it all in a single file, so that it can be curl'd.
 
 # Header: pinned versions.
-GO_VERSION="1.12.4"
-TMUX_VNO="2.8"
+GO_VERSION="1.12.5"
+TMUX_VNO="2.9a"
 WEECHAT_VNO="2.4"
 GETDOCKER="false"
 
@@ -31,8 +31,8 @@ yesno() {
 # Version greater-than-or-equal-to:
 # https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
 vergte() {
-  vA="$(echo $1 | grep -o '[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?')"
-  vB="$(echo $2 | grep -o '[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?')"
+  vA="$(echo $1 | grep -o '[0-9]\+\.[0-9a-z]\+\(\.[0-9a-z]\+\)\?')"
+  vB="$(echo $2 | grep -o '[0-9]\+\.[0-9a-z]\+\(\.[0-9a-z]\+\)\?')"
   lesser="$(echo -e "${vA}\n${vB}" | sort -V | head -n1)"
   [ "$1" = "$lesser" ]
 }
