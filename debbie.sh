@@ -31,8 +31,8 @@ yesno() {
 # Version greater-than-or-equal-to:
 # https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
 vergte() {
-  vA="$(echo $1 | grep -o '[0-9]\+\.[0-9a-z]\+\(\.[0-9a-z]\+\)\?')"
-  vB="$(echo $2 | grep -o '[0-9]\+\.[0-9a-z]\+\(\.[0-9a-z]\+\)\?')"
+  vA="$(echo $1 | grep -o '[0-9a-z]\+\.[0-9a-z]\+\(\.[0-9a-z]\+\)\?')"
+  vB="$(echo $2 | grep -o '[0-9a-z]\+\.[0-9a-z]\+\(\.[0-9a-z]\+\)\?')"
   lesser="$(echo -e "${vA}\n${vB}" | sort -V | head -n1)"
   [ "$1" = "$lesser" ]
 }
@@ -428,9 +428,9 @@ then
   cd "$LPUSHD"
 fi
 
-gpg --recv-keys \
-  --keyserver pool.sks-keyservers.net \
-  03AC4FAAB64FE9EE195E90C93949B487F3C98967
+curl -Lo- \
+  https://raw.githubusercontent.com/cceckman/debbie/master/pubkeys.pgp \
+  | gpg --import
 
 # Manually install rust via rustup.
 # curl https://sh.rustup.sh -sSf | sh
