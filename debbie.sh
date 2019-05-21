@@ -299,7 +299,9 @@ sudo apt-get \
   exit $x
 }
 
-pip3 install yamllint || {
+{
+  pip3 install wheel setuptools pyyaml pathspec yamllint;
+} || {
   x=$?
   echo "Could not install yamllint"
   exit $x
