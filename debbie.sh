@@ -30,10 +30,12 @@ yesno() {
 }
 # Version greater-than-or-equal-to:
 # https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
+getver() {
+  echo -n "$@" | grep -o '[0-9][0-9a-z]*\.[0-9][0-9a-z]*\(\.[0-9][0-9a-z]*\)\?'
+}
+
 vergte() {
-  vA="$(echo $1 | grep -o '[0-9a-z]\+\.[0-9a-z]\+\(\.[0-9a-z]\+\)\?')"
-  vB="$(echo $2 | grep -o '[0-9a-z]\+\.[0-9a-z]\+\(\.[0-9a-z]\+\)\?')"
-  lesser="$(echo -e "${vA}\n${vB}" | sort -V | head -n1)"
+  lesser="$(echo -e "$(getver "$1")\n$(getver "$2")" | sort -V | head -n1)"
   [ "$1" = "$lesser" ]
 }
 
@@ -372,7 +374,7 @@ if (! which go && ! test -x /usr/local/go/bin/go) || \
   ! vergte "$GO_VERSION" "$(go version)"
 then
   {
-    sudo apt-get remove golang-1.10
+    echo "updating Go from $(getver "$(go version)") to $GO_VERSION"
     GOTAR=/tmp/golang.tar.gz
     curl -o $GOTAR https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz \
     && sudo rm -rf /usr/local/go \
@@ -438,7 +440,6 @@ curl -Lo- \
 # echo "If you're going to use this with a Macbook, you probably want to look at:"
 # echo "http://askubuntu.com/questions/530325/tilde-key-on-mac-air-with-ubuntu"
 # Trigger GoInstallBinaries in Vim
-echo "All done! Log in or reboot to finish up." \
-  | vim -c ":GoInstallBinaries"
-
+echo "nothing"  | vim -c ":GoInstallBinaries"
+echo "All done! Log in or reboot to finish up."
 cd $PUSHD
