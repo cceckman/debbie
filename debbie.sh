@@ -332,7 +332,8 @@ sudo chsh -s $(which zsh) $USER
 # Manually install tmux, since the mainline repos aren't up-to-date.
 if ! which tmux || ! vergte "$TMUX_VNO" "$(tmux -V)"
 then
-  sudo apt-get install libncurses5-dev
+  set -e
+  sudo apt-get install libncurses5-dev automake
   LDIR="$(pwd)"
   TMUXTAR=/tmp/tmux.tar.gz
   sudo apt-get -y install libevent-dev \
@@ -347,26 +348,29 @@ then
     && sudo apt-get -y remove tmux \
     && rm -rf /tmp/tmux*
   cd $LDIR
+  set +e
 fi
 
 # Manually install weechat, likewise.
 if ! which weechat || ! vergte "$VNO" "$(weechat --version)"
 then
- LDIR="$(pwd)"
- WCTAR=/tmp/weechat.tar.gz
- sudo apt-get remove weechat
- rm -rf /tmp/build /tmp/weechat-*
- sudo apt-get build-dep -y weechat \
-   && curl -Lo $WCTAR https://github.com/weechat/weechat/archive/v2.0.1.tar.gz \
-   && cd /tmp \
-   && tar -xvf $WCTAR \
-   && cd weechat-${WEECAT_VNO}* \
-   && mkdir build \
-   && cd build \
-   && cmake .. \
-   && make \
-   && sudo make install
- cd $LDIR
+  set -e
+  LDIR="$(pwd)"
+  WCTAR=/tmp/weechat.tar.gz
+  sudo apt-get remove weechat
+  rm -rf /tmp/build /tmp/weechat-*
+  sudo apt-get build-dep -y weechat \
+    && curl -Lo $WCTAR https://github.com/weechat/weechat/archive/v2.0.1.tar.gz \
+    && cd /tmp \
+    && tar -xvf $WCTAR \
+    && cd weechat-${WEECAT_VNO}* \
+    && mkdir build \
+    && cd build \
+    && cmake .. \
+    && make \
+    && sudo make install
+  cd $LDIR
+  set +e
 fi
 
 # Manually install Go, since the mainline repos aren't up-to-date.
@@ -410,6 +414,7 @@ fi
 
 if ! which ctags
 then
+  set -e
   # Manually install universal ctags
   LPUSHD="$(pwd)"
   cd /tmp/
@@ -428,6 +433,7 @@ then
   }
 
   cd "$LPUSHD"
+  set +e
 fi
 
 curl -Lo- \
