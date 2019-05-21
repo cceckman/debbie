@@ -439,6 +439,12 @@ fi
 curl -Lo- \
   https://raw.githubusercontent.com/cceckman/debbie/master/pubkeys.pgp \
   | gpg --import
+# Related to GPG agent forwarding: unbind sockets when client disconnects
+SLBU="StreamLocalBindUnlink yes"
+if ! test -f /etc/ssh/sshd_config || ! grep "$SLBU" /etc/ssh/sshd_config
+then
+  echo "$SLBU" | sudo tee -a /etc/ssh/sshd_config
+fi
 
 # Manually install rust via rustup.
 # curl https://sh.rustup.sh -sSf | sh
