@@ -154,9 +154,10 @@ then
   fi
 fi
 
-if ! which docker 2>&1 >/dev/null && yesno "Install Docker?"
+# Always ask - we aren't checking for upgrades yet
+if yesno "Install Docker?"
 then
-	GETDOCKER="true"
+  GETDOCKER="true"
 fi
 
 if test "$ETCLONEHOME" = 'yes'
@@ -206,7 +207,7 @@ if $GETDOCKER
 then
 	sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 \
 	  --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-	echo "deb https://apt.dockerproject.org/repo debian-stretch main" | sudo tee /etc/apt/sources.list.d/docker.list
+  echo "deb https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
 
 	# Docker group setup
 	sudo groupadd docker
@@ -318,14 +319,8 @@ sudo apt-get -y install \
 
 if $GETDOCKER
 then
-	sudo apt-get -y install \
-	  docker-engine \
-	  || {
-	  echo "Docker install exited with code $?"
-	  echo "Using less safe method..."
-	  curl -sSL https://get.docker.com | sh
-	  sleep 5
-	}
+  sudo apt-get remove -y docker docker-engine docker.io containerd runc || true
+	sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 fi
 
 # Set default shell.
