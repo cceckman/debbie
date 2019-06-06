@@ -357,7 +357,7 @@ then
   sudo apt-get remove weechat
   rm -rf /tmp/build /tmp/weechat-*
   sudo apt-get build-dep -y weechat \
-    && curl -Lo $WCTAR https://github.com/weechat/weechat/archive/v2.0.1.tar.gz \
+    && curl -Lo $WCTAR "https://github.com/weechat/weechat/archive/v${WEECHAT_VNO}.tar.gz" \
     && cd /tmp \
     && tar -xvf $WCTAR \
     && cd weechat-${WEECAT_VNO}* \
