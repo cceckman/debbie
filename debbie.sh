@@ -205,9 +205,15 @@ fi
 # Docker
 if $GETDOCKER
 then
-	sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 \
-	  --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-  echo "deb https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+  curl -fsSL https://download.docker.com/linux/debian/gpg \
+    | sudo apt-key add -v - 2>&1 \
+    | grep 8D81803C0EBFCD88 \
+    || {
+      echo >&2 "bad key for Docker!"
+      exit 1
+    }
+  echo "deb https://download.docker.com/linux/debian $(lsb_release -cs) stable" \
+    | sudo tee /etc/apt/sources.list.d/docker.list
 
 	# Docker group setup
 	sudo groupadd docker
