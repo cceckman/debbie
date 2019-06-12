@@ -454,6 +454,11 @@ fi
 
 # echo "If you're going to use this with a Macbook, you probably want to look at:"
 # echo "http://askubuntu.com/questions/530325/tilde-key-on-mac-air-with-ubuntu"
+
+# Create undo, swap directories for Vim, to keep non-save changes out of the
+# working directory
+mkdir -p .vim/swap .vim/undo
+
 # Trigger GoInstallBinaries in Vim
 echo "nothing"  | vim -c ":GoInstallBinaries"
 echo "All done! Log in or reboot to finish up."
