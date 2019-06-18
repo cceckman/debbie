@@ -452,6 +452,17 @@ fi
 # Manually install rust via rustup.
 # curl https://sh.rustup.sh -sSf | sh
 
+# Manually install http://tldr.sh client
+# Pinning the version by content SHA, so we'll error if there's an update.
+curl -Lo ~/scripts/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr
+if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "33ff4b7c0680e85157b3020882ef8b51eabbe5adccf7059cc4df3a5e03946833"
+then
+  echo >&2 "Unexpected contents for ~/scripts/tldr"
+  echo >&2 "Check it out, and update debbie.sh if it's OK."
+  exit 1
+fi
+chmod +x ~/scripts/tldr
+
 # echo "If you're going to use this with a Macbook, you probably want to look at:"
 # echo "http://askubuntu.com/questions/530325/tilde-key-on-mac-air-with-ubuntu"
 
