@@ -3,9 +3,9 @@
 # Put it all in a single file, so that it can be curl'd.
 
 # Header: pinned versions.
-GO_VERSION="1.12.5"
+GO_VERSION="1.12.6"
 TMUX_VNO="2.9a"
-WEECHAT_VNO="2.4"
+WEECHAT_VNO="2.5"
 IBAZEL_VNO="0.10.2"
 GETDOCKER="false"
 
