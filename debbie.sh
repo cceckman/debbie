@@ -1,4 +1,4 @@
-#! /bin/sh -x
+#! /bin/bash -x
 # Set up a Debian / Ubuntu machine to my liking.
 # Put it all in a single file, so that it can be curl'd.
 
@@ -6,6 +6,7 @@
 GO_VERSION="1.12.5"
 TMUX_VNO="2.9a"
 WEECHAT_VNO="2.4"
+IBAZEL_VNO="0.10.2"
 GETDOCKER="false"
 
 # Header: common functions.
@@ -24,7 +25,7 @@ yesno() {
     return 1
   fi
 
-  read result
+  read -r result
   echo -n "$result" | grep -q '[yY]'
   return $?
 }
@@ -42,10 +43,7 @@ vergte() {
 # Header: required tools.
 tools="apt-get apt-key cat curl hostname ssh-keygen sudo tee which lsb_release grep"
 
-# Begin: start in a common base directory.
-# pushd is a Bash builtin, not a POSIX-compatible command.
-PUSHD="$(pwd)"
-cd $HOME
+pushd "$HOME"
 
 # Start by entering sudo mode.
 if [ "$USER" = "root" ]
@@ -62,7 +60,7 @@ fi
 echo "Looking for required tools..."
 for tool in $tools
 do
-  if ! which $tool
+  if ! which "$tool"
   then
     echo "Could not find $tool! Aborting."
     exit 1
@@ -103,26 +101,26 @@ if yesno "Generate new SSH credentials?"
 then
   echo "echo OK, Generating new SSH credentials..."
   ssh-keygen -t ed25519 -f "$HOME/.ssh/id_ed25519" -C "$USER $(hostname)" -o -a 100
-  ssh-keygen -t rsa -b 4096 -f $HOME/.ssh/id_rsa -C "$USER $(hostname)" -o -a 100
+  ssh-keygen -t rsa -b 4096 -f "$HOME/.ssh/id_rsa" -C "$USER $(hostname)" -o -a 100
 
   # Attempt to POST to github.
   keyreq='/tmp/keyreq'
   cat - << HRD > $keyreq
 {
   "title": "$USER@$(hostname)",
-  "key": "$(cat $HOME/.ssh/id_rsa.pub)"
+  "key": "$(cat "$HOME/.ssh/id_rsa.pub")"
 }
 HRD
   while true
   do
     prompt "Enter a Github authentication token for ${USER}:"
-    read token
+    read -r token
 
     {
       curl --fail \
         -X POST \
-        --data-binary @$keyreq \
-        -u ${USER}:${token} \
+        --data-binary @"$keyreq" \
+        -u "${USER}:${token}" \
         https://api.github.com/user/keys \
       && { echo "Upload successful!"; break; }
     } || {
@@ -141,11 +139,11 @@ fi
 
 # Set Github public key.
 mkdir -p ~/.ssh
-echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="  >> $HOME/.ssh/known_hosts
+echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="  >> "$HOME/.ssh/known_hosts"
 
 # Clone Tilde.
 ETCLONEHOME='yes'
-if test -d $HOME/.git
+if test -d "$HOME/.git"
 then
   ETCLONEHOME='no'
   if yesno "Found $HOME/.git. Clone Tilde anyway?"
@@ -169,7 +167,6 @@ then
       echo "Failed to clone Tilde! Exiting unhappily.,"
       exit $x
     }
-  } && {
     mv Tilde/.git . \
     && rm -rf Tilde \
     && git reset --hard \
@@ -182,7 +179,7 @@ then
   }
 else
   echo "Skipping cloning Tilde..."
-  touch $HOME/clone-skipped
+  touch "$HOME/clone-skipped"
 fi
 
 # Need this to use the other repositories...
@@ -195,7 +192,7 @@ echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" |
 curl https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg | sudo apt-key add  -
 
 # GCloud
-if ! ls /etc/apt/sources.list.d/ | grep -q google-cloud
+if ! test -e /etc/apt/sources.list.d/google-cloud*.list
 then
   CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
   echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
@@ -217,7 +214,7 @@ then
 
 	# Docker group setup
 	sudo groupadd docker
-	sudo gpasswd -a ${USER} docker
+	sudo gpasswd -a "$USER" docker
 
 	sudo apt-get update
 fi
@@ -230,7 +227,7 @@ case "$(uname -v)" in
     more_pkgs='chromium-browser'
     ;;
   *Debian*)
-    mork_pkgs='chromium'
+    more_pkgs='chromium'
     ;;
 esac
 # Missing:
@@ -330,18 +327,17 @@ then
 fi
 
 # Set default shell.
-sudo chsh -s $(which zsh) $USER
+sudo chsh -s "$(which zsh)" "$USER"
 
 # Manually install tmux, since the mainline repos aren't up-to-date.
 if ! which tmux || ! vergte "$TMUX_VNO" "$(tmux -V)"
 then
-  set -e
+  echo "Building & installing tmux $TMUX_VNO"
+  pushd /tmp
   sudo apt-get install libncurses5-dev automake
-  LDIR="$(pwd)"
   TMUXTAR=/tmp/tmux.tar.gz
   sudo apt-get -y install libevent-dev \
     && curl -Lo $TMUXTAR https://github.com/tmux/tmux/archive/${TMUX_VNO}.tar.gz \
-    && cd /tmp \
     && tar -xvf $TMUXTAR \
     && cd tmux-$TMUX_VNO \
     && sh autogen.sh \
@@ -350,40 +346,39 @@ then
     && sudo make install \
     && sudo apt-get -y remove tmux \
     && rm -rf /tmp/tmux*
-  cd $LDIR
   set +e
+  popd
 fi
 
 # Manually install weechat, likewise.
-if ! which weechat || ! vergte "$VNO" "$(weechat --version)"
+if ! which weechat || ! vergte "$WEECHAT_VNO" "$(weechat --version)"
 then
+  echo "Building & installing weechat $WEECHAT_VNO"
+  pushd /tmp/
   set -e
-  LDIR="$(pwd)"
   WCTAR=/tmp/weechat.tar.gz
   sudo apt-get remove weechat
   rm -rf /tmp/build /tmp/weechat-*
   sudo apt-get build-dep -y weechat \
     && curl -Lo $WCTAR "https://github.com/weechat/weechat/archive/v${WEECHAT_VNO}.tar.gz" \
-    && cd /tmp \
     && tar -xvf $WCTAR \
-    && cd weechat-${WEECAT_VNO}* \
+    && cd weechat-${WEECHAT_VNO}* \
     && mkdir build \
     && cd build \
     && cmake .. \
     && make \
     && sudo make install
-  cd $LDIR
   set +e
+  popd
 fi
 
-# Manually install Go, since the mainline repos aren't up-to-date.
-if (! which go && ! test -x /usr/local/go/bin/go) || \
-  ! vergte "$GO_VERSION" "$(go version)"
+# Manually install Go, since the mainline repos aren't usually up-to-date.
+if ! which go || ! vergte "$GO_VERSION" "$(go version)"
 then
   {
     echo "updating Go from $(getver "$(go version)") to $GO_VERSION"
     GOTAR=/tmp/golang.tar.gz
-    curl -o $GOTAR https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz \
+    curl -o "$GOTAR" https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz \
     && sudo rm -rf /usr/local/go \
     && sudo tar -C /usr/local -xzf $GOTAR \
     && rm $GOTAR
@@ -392,6 +387,13 @@ then
     echo "Go tools install failed with exit code: $x"
     exit $x
   }
+
+  if ! vergte "$GO_VERSION" "$(go version)"
+  then
+    echo >&2 "Unexpected Go version: $(go version) from $(which go)"
+    echo >&2 "Check install path, and maybe uninstall the Golang package"
+    exit 1
+  fi
 else
   echo "Go appears to be up to date."
 fi
@@ -402,41 +404,43 @@ go get -u github.com/bazelbuild/buildtools/buildifier
 go get -u github.com/derekparker/delve/cmd/dlv
 go get -u github.com/github/hub
 
-eval $(go env)
-if ! which ibazel && test -n "$GOPATH"
+# shellcheck disable=SC2046
+if ! which ibazel || ! vergte "$IBAZEL_VNO" "$(ibazel 2>&1 | head -1 grep -o '[^v]*$')"
 then
   # Manually install ibazel
-  LPUSHD="$(pwd)"
-  cd /tmp
+  mkdir -p "$HOME/bin"
+  pushd /tmp
+  set -e
   rm -rf ibazel
   git clone git://github.com/bazelbuild/bazel-watcher ibazel
   cd ibazel
   bazel build //ibazel
-  cp $PWD/bazel-bin/ibazel/${GOOS}_${GOARCH}_pure_stripped/ibazel $GOPATH/bin
+  cp bazel-bin/ibazel/*_pure_stripped/ibazel "$HOME/bin"
+  set +e
+  popd
 fi
 
 if ! which ctags
 then
-  set -e
-  # Manually install universal ctags
-  LPUSHD="$(pwd)"
+  pushd /tmp
+  # Manually install universal ctags. This is a little sketchy- they don't
+  # actually build releases. TODO(cceckman): Move to LSP at some point(s).
   cd /tmp/
   rm -rf ctags
-  git clone git://github.com/universal-ctags/ctags \
+  { git clone git://github.com/universal-ctags/ctags \
     && cd ctags \
     && ./autogen.sh\
     && ./configure \
     && make \
     && sudo make install \
-    && rm -rf /tmp/ctags \
-    || {
+    && rm -rf /tmp/ctags
+  } || {
     x=$?
     echo "Failed to install universal ctags!" 1>&2
     echo $x
   }
-
-  cd "$LPUSHD"
   set +e
+  popd
 fi
 
 curl -Lo- \
@@ -473,4 +477,4 @@ mkdir -p .vim/swap .vim/undo
 # Trigger GoInstallBinaries in Vim
 echo "nothing"  | vim -c ":GoInstallBinaries"
 echo "All done! Log in or reboot to finish up."
-cd $PUSHD
+popd
