@@ -39,6 +39,10 @@ then
   err "There appears to already be a mount at $MOUNT!"
 fi
 
+NEWUSER="${NEWUSER:-${USER}}"
+
+sudo echo "entered sudo mode!"
+
 echo -n "Confirming debootstrap..."
 if ! sudo which debootstrap
 then
@@ -46,9 +50,11 @@ then
 fi
 echo "done."
 
-
 echo "Candidate drive $DEVICE looks OK."
-echo "Confirming: can I make changes to $DEVICE?"
+echo "Confirming: "
+echo "  New hostname: $NEWHOST"
+echo "  On device:    $DEVICE"
+echo "  Superuser:    $NEWUSER"
 echo -n "(y/N)> "
 read -r CONFIRM
 case "$CONFIRM" in
@@ -58,8 +64,6 @@ case "$CONFIRM" in
     exit 1
     ;;
 esac
-
-sudo echo "entered sudo mode!"
 
 
 # Partition the device for EFI booting w/ encrypted LVM and swap.
@@ -166,7 +170,128 @@ sudo swapon "/dev/$VGNAME/swap"
 sync
 echo "Mounted filesystems."
 
-# TODO: Install OS, EFI bootloader, etc.
+
+echo "Running debootstrap..."
+sudo debootstrap \
+  --include=linux-image-amd64 \
+  --merged-usr \
+  buster "$MOUNT"
+echo "debootstrap done!"
+
+echo "Generating fstab..."
+cat <<FSTAB | sudo tee "$MOUNT/etc/fstab"
+# /etc/fstab: static file system information. See fstab(5)
+#
+# Use 'blkid' to print the UUID for a device where applicable.
+#
+# <volume/device>              <mount point>   <fs type>  <options>          <dump>   <pass>
+/dev/mapper/$NEWHOST--vg-root  /               ext4       errors=remount-ro 0 1
+UUID=$(lsblk --noheadings --output UUID "$EFI") /boot vfat umask=0077 0 2
+/dev/mapper/$NEWHOST--vg-var   /var            ext4       defaults 0 2
+/dev/mapper/$NEWHOST--vg-home  /home           ext4       defaults 0 2
+/dev/mapper/$NEWHOST--vg-swap  none            swap       sw 0 2
+tmpfs                          /tmp            tmpfs      size=10g 0 0
+FSTAB
+echo "done generating fstab."
+
+NEWLOCALE="en_US.UTF-8"
+echo "Configuring locales for $NEWLOCALE..."
+sudo chroot "$MOUNT" \
+  apt install -y locales                        # Add locales package
+# TODO: install locales with debootstrap?
+sudo chroot "$MOUNT" \
+  sed -i "/$NEWLOCALE/s/^# //" /etc/locale.gen  # Configure locales-gen
+sudo chroot "$MOUNT" \
+  dpkg-reconfigure -f noninteractive locales    # Run locales-gen
+sudo chroot "$MOUNT" \
+  update-locale "LANG=$NEWLOCALE"               # Set /etc/default/locale
+echo "done."
+
+NEWTZ="America/Los_Angeles"
+echo "Configuring timezone to $NEWTZ..."
+sudo chroot "$MOUNT" \
+  ln -fs "/usr/share/zoneinfo/$NEWTZ" /etc/localtime # Set system timezone
+sudo dpkg-reconfigure -f noninteractive tzdata       # Reconfigure tzdata accordingly
+# TODO: do something with hwclock or /etc/adjtime?
+echo "done."
+
+sudo systemd-nspawn --directory "$MOUNT" \
+  systemctl enable systemd-networkd systemd-resolved
+cat <<NET | sudo tee "$MOUNT/etc/systemd/network/99-default.network"
+[Match]
+# Any not yet matched.
+
+[Network]
+Description=Default DHCP networking
+DHCP=yes
+
+NET
+
+# TODO: Install graphical system
+
+echo "Adding mounts to chroot for grub install..."
+sudo chroot "$MOUNT" mount none -t proc /proc
+sudo mount -obind /dev "$MOUNT/dev"
+sudo mount -obind /sys "$MOUNT/sys"
+echo "done."
+
+# TODO: Move to grub-efi-amd64-signed, and install with --uefi-secure-boot
+echo "Installing bootloader..."
+sudo chroot "$MOUNT" \
+  apt install -y \
+  grub-efi
+
+# Some info at https://wiki.debian.org/GrubEFIReinstall
+sudo chroot "$MOUNT" \
+  grub-install \
+  --target=x86_64-efi \
+  --efi-directory=/boot \
+  --bootloader-id=GRUB-SSD
+
+cat <<TUNE | sudo tee -a "$MOUNT/etc/default/grub"
+# Super Mario boot tune, per https://forum.manjaro.org/t/grub-tunes-collection-fun-sound-startup-grub/62229
+GRUB_INIT_TUNE="1000 334 1 334 1 0 1 334 1 0 1 261 1 334 1 0 1 392 2 0 4 196 2"
+TUNE
+sudo chroot "$MOUNT" \
+  update-grub
+
+# Don't use MAKEDEV; we don't need all those spare ones (can use systemd)
+
+echo "Setting up admin user $NEWUSER..."
+sudo chroot "$MOUNT" \
+  adduser "$NEWUSER" \
+  --gecos '' \
+  --disabled-password
+
+echo "Granting sudo permissions..."
+sudo chroot "$MOUNT" \
+  adduser "$NEWUSER" sudo
+echo "done."
+
+NEWPW=$(
+  grep -v "'" /usr/share/dict/words \
+    | grep '....' \
+    | shuf -n 4 \
+    | sed 's/.\+/\L\u&/g' \
+    | tr -d '\n'
+)
+
+PWBACKUP="$HOME/${NEWHOST}-pass"
+
+echo "Setting temporary password for $NEWUSER..."
+# Use `chroot` rather than `--root` for chpasswd; appears to be something to do
+# with blocked PAM syscalls.
+echo "$NEWUSER":"$NEWPW" \
+  | tee "$PWBACKUP" \
+  | sudo chroot "$MOUNT" chpasswd
+echo "Password for $NEWUSER is stored at $PWBACKUP."
+
+# Likewise, don't use the builtin `-R`; causes a load error. :-(
+sudo chroot "$MOUNT" passwd --expire "$NEWUSER"
+echo "You'll be prompted to change it at first login."
+
+echo "Press enter to confirm and continue..."
+read -r
 
 echo "Cleaning up..."
 
