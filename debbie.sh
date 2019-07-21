@@ -405,7 +405,8 @@ then
   git clone git://github.com/bazelbuild/bazel-watcher ibazel
   cd ibazel
   bazel build //ibazel
-  cp bazel-bin/ibazel/*_pure_stripped/ibazel "$HOME/bin"
+  cp bazel-bin/ibazel/*_pure_stripped/ibazel "$HOME/bin/ibazel"
+  chmod 0744 "$HOME/bin/ibazel" # allow later rewriting
   set +e
   popd
 fi
