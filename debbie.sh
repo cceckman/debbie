@@ -29,6 +29,7 @@ yesno() {
   echo -n "$result" | grep -q '[yY]'
   return $?
 }
+
 # Version greater-than-or-equal-to:
 # https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
 getver() {
@@ -67,39 +68,44 @@ do
   fi
 done
 
-sudo apt-get install locales
-
-# Set locale to US.
-sudo sed -i -e 's/^[^#]/# \0/' -e 's/^.*\(en_US.UTF-8\)/\1/' /etc/locale.gen
-sudo /usr/sbin/locale-gen
-sudo apt-get update
-# Bring everything up to date from the base image.
-sudo apt-get -y upgrade
-
-# Want a more recent kernel?
-# Great- upgrade from Jessie!
-# if { uname -r | grep -q '^[^4]'; } && yesno "Would you like to update to a 4.X kernel?"
-# then
-#   {
-#   sudo apt-get -y install -t jessie-backports \
-#     linux-image-amd64 \
-#     linux-headers-amd64 \
-#     linux-image-extra \
-#     dkms \
-#     virtualbox-guest-dkms \
-#     broadcom-sta-dkms
-#   }
-# fi
-
-
-# Get git
-sudo apt-get -y install git
-
+# Ask all questions up-front.
 # Set up SSH credentials, incl. for Github.
-
+NEWKEYS="false"
 if yesno "Generate new SSH credentials?"
 then
-  echo "echo OK, Generating new SSH credentials..."
+  NEWKEYS="true"
+fi
+
+# Clone Tilde.
+ETCLONEHOME="true"
+if test -d "$HOME/.git"
+then
+  ETCLONEHOME="false"
+  if yesno "Found $HOME/.git. Clone Tilde anyway?"
+  then
+    ETCLONEHOME="true"
+  fi
+fi
+
+# Always ask - we aren't checking for upgrades yet
+if yesno "Install Docker?"
+then
+  GETDOCKER="true"
+fi
+
+# Indirect dependencies
+sudo apt-get install -y locales git apt-transport-https
+
+if ! locale | grep 'LANG=en_US.UTF-8'
+then
+  # Set locale to US.
+  sudo sed -i -e 's/^[^#]/# \0/' -e 's/^.*\(en_US.UTF-8\)/\1/' /etc/locale.gen
+  sudo /usr/sbin/locale-gen
+fi
+
+if "$NEWKEYS"
+then
+  echo "Generating new SSH credentials..."
   ssh-keygen -t ed25519 -f "$HOME/.ssh/id_ed25519" -C "$USER $(hostname)" -o -a 100
   ssh-keygen -t rsa -b 4096 -f "$HOME/.ssh/id_rsa" -C "$USER $(hostname)" -o -a 100
 
@@ -139,23 +145,9 @@ fi
 
 # Set Github public key.
 mkdir -p ~/.ssh
-echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="  >> "$HOME/.ssh/known_hosts"
-
-# Clone Tilde.
-ETCLONEHOME='yes'
-if test -d "$HOME/.git"
+if grep -v "^github.com" "$HOME/.ssh/known_hosts"
 then
-  ETCLONEHOME='no'
-  if yesno "Found $HOME/.git. Clone Tilde anyway?"
-  then
-    ETCLONEHOME='yes'
-  fi
-fi
-
-# Always ask - we aren't checking for upgrades yet
-if yesno "Install Docker?"
-then
-  GETDOCKER="true"
+  echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="  >> "$HOME/.ssh/known_hosts"
 fi
 
 if test "$ETCLONEHOME" = 'yes'
@@ -181,9 +173,6 @@ else
   echo "Skipping cloning Tilde..."
   touch "$HOME/clone-skipped"
 fi
-
-# Need this to use the other repositories...
-sudo apt-get -y install apt-transport-https
 
 # Add some custom repositories
 # Bazel
@@ -215,12 +204,13 @@ then
 	# Docker group setup
 	sudo groupadd docker
 	sudo gpasswd -a "$USER" docker
-
-	sudo apt-get update
 fi
 
-# Packages that are different on Debian vs. Ubuntu.
+# Update && upgrade now that we've added repositories
+sudo apt-get update
+sudo apt-get upgrade
 
+# Packages that are different on Debian vs. Ubuntu.
 more_pkgs=''
 case "$(uname -v)" in
   *Ubuntu*)
