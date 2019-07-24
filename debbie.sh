@@ -211,7 +211,7 @@ fi
 
 # Update && upgrade now that we've added repositories
 sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get upgrade -y
 
 # Packages that are different on Debian vs. Ubuntu.
 more_pkgs=''
@@ -227,69 +227,70 @@ esac
 # - bd not available in Ubuntu 16.04, so don't include it anywhere.
 
 # Load packages. This eats a little more than 1GB, all told.
-sudo apt-get \
-  --no-install-recommends \
-  -y install \
-  acpi \
-  arping \
-  autoconf \
-  bash \
-  bc \
-  cgmanager \
-  clang \
-  cmatrix \
-  devscripts \
-  dnsutils \
-  dosfstools \
-  feh \
-  fonts-powerline \
-  fping \
-  gdb \
-  google-cloud-sdk \
-  graphviz \
-  i3 \
-  i3status \
-  ipcalc \
-  jq \
-  kubectl \
-  libanyevent-i3-perl \
-  libnotify-bin \
-  lldb \
-  llvm \
-  make \
-  mlocate \
-  mtr \
-  net-tools \
-  ntfs-3g \
-  parallel \
-  parted \
-  pcscd \
-  pkg-config \
-  python \
-  python-gflags \
-  python3 \
-  python3-pip \
-  redshift \
-  rsync \
-  ssh \
-  scdaemon \
-  tcpdump \
-  traceroute \
-  vim \
-  vim-gtk \
-  whois \
-  wireshark \
-  xbacklight \
-  xclip \
-  xorg \
-  xscreensaver \
-  xscreensaver-data-extra \
-  xss-lock \
-  xterm \
-  yubikey-personalization \
-  zip \
-  zsh \
-  ${more_pkgs} \
+sudo \
+  DEBIAN_FRONTEND=noninteractive \
+  apt-get -yq --no-install-recommends \
+  install \
+    acpi \
+    arping \
+    autoconf \
+    bash \
+    bc \
+    cgmanager \
+    clang \
+    cmatrix \
+    devscripts \
+    dnsutils \
+    dosfstools \
+    feh \
+    fonts-powerline \
+    fping \
+    gdb \
+    google-cloud-sdk \
+    graphviz \
+    i3 \
+    i3status \
+    ipcalc \
+    jq \
+    kubectl \
+    libanyevent-i3-perl \
+    libnotify-bin \
+    lldb \
+    llvm \
+    make \
+    mlocate \
+    mtr \
+    net-tools \
+    ntfs-3g \
+    parallel \
+    parted \
+    pcscd \
+    pkg-config \
+    python \
+    python-gflags \
+    python3 \
+    python3-pip \
+    redshift \
+    rsync \
+    ssh \
+    scdaemon \
+    tcpdump \
+    traceroute \
+    vim \
+    vim-gtk \
+    whois \
+    wireshark \
+    xbacklight \
+    xclip \
+    xorg \
+    xscreensaver \
+    xscreensaver-data-extra \
+    xss-lock \
+    xterm \
+    yubikey-personalization \
+    zip \
+    zsh \
+    ${more_pkgs} \
  || {
   x=$?
   echo "Package install failed with exit code: $x"
