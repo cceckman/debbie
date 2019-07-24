@@ -150,7 +150,7 @@ then
   echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="  >> "$HOME/.ssh/known_hosts"
 fi
 
-if test "$ETCLONEHOME" = 'yes'
+if "$ETCLONEHOME"
 then
   echo "Cloning Tilde repository..."
   {
@@ -162,8 +162,11 @@ then
     mv Tilde/.git . \
     && rm -rf Tilde \
     && git reset --hard \
-    && git submodule update --recursive --init \
     && git remote set-url origin git@github.com:cceckman/Tilde.git
+    # Soft-fail submodule update; may not have `secrets` access
+    set +e
+    git submodule update --recursive --init
+    set -e
   } || {
     x=$?
     echo "Failed to load Tilde into \$HOME!"
@@ -324,7 +327,7 @@ if ! which tmux || ! vergte "$TMUX_VNO" "$(tmux -V)"
 then
   echo "Building & installing tmux $TMUX_VNO"
   pushd /tmp
-  sudo apt-get install libncurses5-dev automake
+  sudo apt-get -y install libncurses5-dev automake
   TMUXTAR=/tmp/tmux.tar.gz
   sudo apt-get -y install libevent-dev \
     && curl -Lo $TMUXTAR https://github.com/tmux/tmux/archive/${TMUX_VNO}.tar.gz \
@@ -372,6 +375,7 @@ then
     && sudo rm -rf /usr/local/go \
     && sudo tar -C /usr/local -xzf $GOTAR \
     && rm $GOTAR
+    export PATH="/usr/local/go/bin:$PATH"
   } || {
     x=$?
     echo "Go tools install failed with exit code: $x"
