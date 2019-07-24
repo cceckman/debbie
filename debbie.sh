@@ -298,7 +298,8 @@ sudo \
 }
 
 {
-  pip3 install wheel setuptools pyyaml pathspec yamllint;
+  pip3 install wheel setuptools \
+    && pip3 install pyyaml pathspec yamllint;
 } || {
   x=$?
   echo "Could not install yamllint"
