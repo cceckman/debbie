@@ -174,7 +174,6 @@ then
   }
 else
   echo "Skipping cloning Tilde..."
-  touch "$HOME/clone-skipped"
 fi
 
 # Add some custom repositories
