@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /bin/bash -eu
 # Set up a Debian / Ubuntu machine to my liking.
 # Put it all in a single file, so that it can be curl'd.
 
@@ -7,15 +7,58 @@
 # debbie defines a set of "features" that we may / may not want to run.
 # Each "feature" ties in to "stages", which are:
 # - Install dependencies (including Apt repositories)
-# - Install & update prebuilts
+# - Install & update pre-built binaries
 # - Test and/or build pinned software (i.e. stuff that's built from source)
-# Each (feature,stage) is defined as a namespaced function: debbie::${feature}::${stage}.
+#
+# All the available functions go into stage tables,
+#   PREPARE[$feature], INSTALL[$feature], and BUILD[$feature].
+# Usually the function in the table will be something like debbie::${feature}::${stage},
+# but some share implementations (e.g. util::noop).
+#
 # Features can be toggled on and off by +feature -feature on the command line.
 
+declare -A PREPARE
+declare -A INSTALL
+declare -A BUILD
+export PREPARE INSTALL BUILD
+
+DEFAULT_MODULES="+core +graphical +gcloud"
+
+util::help() {
+  cat <<EOF
+$1: bootstrap a system to cceckman's liking
+
+  debbie.sh is a (Bash) shell script that configures a Debian system with stuff
+  @cceckman finds useful.
+
+  It contains a number of "features", which can be toggled on or off with
+  arguments like "+feature" or "-feature". The default options are given below;
+  feature names are (mostly) self-describing.
+
+Default modules:
+  $DEFAULT_MODULES
+
+Available modules:
+  
+EOF
+  for feature in "${!FEATURES[@]}"
+  do
+    if test "$feature" == "prestage"
+    then
+      continue
+    fi
+    echo -n "${feature} "
+  done
+  echo
+  exit -1
+}
+
 main() {
-  local INPUT_FEATURES="+prestage +core +home +tmux $*"
+  local INPUT_FEATURES="$DEFAULT_MODULES $*"
   declare -A FEATURES
+  FEATURES[prestage]="true"
   local ERR="false"
+  local HELP="false"
   for flag in $INPUT_FEATURES
   do
     local tag="${flag:0:1}"
@@ -26,22 +69,34 @@ main() {
         *) echo >&2 "Unrecognized operation $tag in $flag; must be '+' or '-'"
            ERR="true"
     esac
+    case "$feature" in
+      *help) HELP=true;;
+    esac
   done
 
-  declare -a STAGES
-  STAGES=(prepare prebuilt build)
+  if "$HELP"
+  then
+    util::help "$0" "$@"
+  fi
 
   for feature in "${!FEATURES[@]}"
   do
-    for stage in "${STAGES[@]}"
-    do
-      myType=""
-      if ! test "$(type -t "debbie::${feature}::${stage}")" == "function"
-      then
-        ERR="true"
-        echo >&2 "Unknown feature/stage combination: 'debbie::${feature}::${stage}' has type '$myType'"
-      fi
-    done
+    # We can't loop through here because treating it like a nested array goes poorly.
+    if ! test "$(type -t "${PREPARE[$feature]}")" == "function"
+    then
+      ERR="true"
+      echo >&2 "Unknown stage/feature combination: 'PREPARE ${feature}'"
+    fi
+    if ! test "$(type -t "${INSTALL[$feature]}")" == "function"
+    then
+      ERR="true"
+      echo >&2 "Unknown stage/feature combination: 'INSTALL ${feature}'"
+    fi
+    if ! test "$(type -t "${BUILD[$feature]}")" == "function"
+    then
+      ERR="true"
+      echo >&2 "Unknown stage/feature combination: 'BUILD ${feature}'"
+    fi
   done
   if "$ERR"; then exit 1; fi
 
@@ -49,15 +104,18 @@ main() {
   # Do some general checking:
   util::preflight
   # and run each stage.
-  # Note this means there's no guaranteed order between different features.
-  for stage in "${STAGES[@]}"
+  for feature in "${!FEATURES[@]}"
   do
-    for feature in "${!FEATURES[@]}"
-    do
-      "debbie::${feature}::${stage}"
-    done
+    "${PREPARE[$feature]}"
   done
-
+  for feature in "${!FEATURES[@]}"
+  do
+    "${INSTALL[$feature]}"
+  done
+  for feature in "${!FEATURES[@]}"
+  do
+    "${BUILD[$feature]}"
+  done
   echo "All done!"
 }
 
@@ -90,90 +148,71 @@ util::vergte() {
   lesser="$(echo -e "$(util::getver "$1")\\n$(util::getver "$2")" | sort -V | head -n1)"
   [ "$1" = "$lesser" ]
 }
-
-debbie::prestage::prepare() {
-  # Nothing to be done before e.g. updating repositories
-  return
-}
-debbie::prestage::prebuilt() {
-  # Before installing prebuilt packages...
-  sudo apt-get update
-  sudo apt-get upgrade
-}
-debbie::prestage::build() {
+util::noop() {
   return
 }
 
-debbie::core::prepare() {
-  # Nothing to do before installing locales, git, etc.
-  return
-}
-debbie::core::prebuilt() {
+util::install_packages() {
   sudo \
     DEBIAN_FRONTEND=noninteractive \
     apt-get -yq --no-install-recommends \
-    install \
-      locales \
-      git \
-      acpi \
-      arping \
-      autoconf \
-      bash \
-      bc \
-      cgmanager \
-      clang \
-      cmatrix \
-      devscripts \
-      dnsutils \
-      dosfstools \
-      feh \
-      fonts-powerline \
-      fping \
-      gdb \
-      google-cloud-sdk \
-      graphviz \
-      i3 \
-      i3status \
-      ipcalc \
-      jq \
-      kubectl \
-      libanyevent-i3-perl \
-      libnotify-bin \
-      lldb \
-      llvm \
-      make \
-      mlocate \
-      mtr \
-      net-tools \
-      ntfs-3g \
-      parallel \
-      parted \
-      pcscd \
-      pkg-config \
-      python \
-      python-gflags \
-      python3 \
-      python3-pip \
-      redshift \
-      rsync \
-      ssh \
-      scdaemon \
-      tcpdump \
-      traceroute \
-      vim \
-      vim-gtk \
-      whois \
-      wireshark \
-      xbacklight \
-      xclip \
-      xorg \
-      xscreensaver \
-      xscreensaver-data-extra \
-      xss-lock \
-      xterm \
-      yubikey-personalization \
-      zip \
-      zsh
+    install "$@"
+}
+
+debbie::prestage::install() {
+  sudo apt-get update
+  sudo apt-get upgrade
+}
+PREPARE[prestage]=util::noop
+INSTALL[prestage]=debbie::prestage::install
+BUILD[prestage]=util::noop
+
+debbie::core::install() {
+  util::install_packages \
+    locales \
+    lsb-release \
+    git \
+    acpi \
+    arping \
+    autoconf \
+    bash \
+    bc \
+    cgmanager \
+    clang \
+    cmatrix \
+    devscripts \
+    dnsutils \
+    dosfstools \
+    fping \
+    gdb \
+    graphviz \
+    ipcalc \
+    jq \
+    kubectl \
+    libnotify-bin \
+    lldb \
+    llvm \
+    make \
+    mlocate \
+    mtr \
+    net-tools \
+    ntfs-3g \
+    parallel \
+    parted \
+    pcscd \
+    pkg-config \
+    python \
+    python-gflags \
+    python3 \
+    python3-pip \
+    rsync \
+    ssh \
+    tcpdump \
+    traceroute \
+    vim \
+    whois \
+    zip \
+    zsh
 }
 debbie::core::build() {
   # Set locale to US
@@ -184,5 +223,50 @@ debbie::core::build() {
     sudo /usr/sbin/locale-gen
   fi
 }
+PREPARE[core]=util::noop
+INSTALL[core]=debbie::core::install
+BUILD[core]=debbie::core::build
+
+debbie::graphical::install() {
+  util::install_packages \
+    feh \
+    fonts-powerline \
+    i3 \
+    i3status \
+    libanyevent-i3-perl \
+    redshift \
+    scdaemon \
+    vim-gtk \
+    wireshark \
+    xbacklight \
+    xclip \
+    xorg \
+    xscreensaver \
+    xscreensaver-data-extra \
+    xss-lock \
+    xterm \
+    yubikey-personalization
+}
+
+PREPARE[graphical]=util::noop
+INSTALL[graphical]=debbie::graphical::install
+BUILD[graphical]=util::noop
+
+debbie::gcloud::prepare() {
+  if ! grep -q "packages.cloud.google.com" /etc/apt/sources.list.d/* /etc/apt/sources.list
+  then
+    CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+    echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+  fi
+}
+
+debbie::gcloud::install() {
+  util::install_packages google-cloud-sdk
+}
+
+PREPARE[gcloud]=debbie::gcloud::prepare
+INSTALL[gcloud]=debbie::gcloud::install
+BUILD[gcloud]=util::noop
 
 main "$@"
