@@ -37,12 +37,12 @@ getver() {
 }
 
 vergte() {
-  lesser="$(echo -e "$(getver "$1")\n$(getver "$2")" | sort -V | head -n1)"
+  lesser="$(echo -e "$(getver "$1")\\n$(getver "$2")" | sort -V | head -n1)"
   [ "$1" = "$lesser" ]
 }
 
 # Header: required tools.
-tools="apt-get apt-key cat curl hostname ssh-keygen sudo tee which lsb_release grep"
+tools="apt-get apt-key cat curl hostname ssh-keygen sudo tee lsb_release grep"
 
 pushd "$HOME"
 
@@ -61,7 +61,7 @@ fi
 echo "Looking for required tools..."
 for tool in $tools
 do
-  if ! which "$tool"
+  if ! command -v "$tool"
   then
     echo "Could not find $tool! Aborting."
     exit 1
@@ -322,10 +322,10 @@ then
 fi
 
 # Set default shell.
-sudo chsh -s "$(which zsh)" "$USER"
+sudo chsh -s "$(command -v zsh)" "$USER"
 
 # Manually install tmux, since the mainline repos aren't up-to-date.
-if ! which tmux || ! vergte "$TMUX_VNO" "$(tmux -V)"
+if ! command -v tmux || ! vergte "$TMUX_VNO" "$(tmux -V)"
 then
   echo "Building & installing tmux $TMUX_VNO"
   pushd /tmp
@@ -346,7 +346,7 @@ then
 fi
 
 # Manually install weechat, likewise.
-if ! which weechat || ! vergte "$WEECHAT_VNO" "$(weechat --version)"
+if ! command -v weechat || ! vergte "$WEECHAT_VNO" "$(weechat --version)"
 then
   echo "Building & installing weechat $WEECHAT_VNO"
   pushd /tmp/
@@ -368,7 +368,7 @@ then
 fi
 
 # Manually install Go, since the mainline repos aren't usually up-to-date.
-if ! which go || ! vergte "$GO_VERSION" "$(go version)"
+if ! command -v go || ! vergte "$GO_VERSION" "$(go version)"
 then
   {
     echo "updating Go from $(getver "$(go version)") to $GO_VERSION"
@@ -386,7 +386,7 @@ then
 
   if ! vergte "$GO_VERSION" "$(go version)"
   then
-    echo >&2 "Unexpected Go version: $(go version) from $(which go)"
+    echo >&2 "Unexpected Go version: $(go version) from $(command -v go)"
     echo >&2 "Check install path, and maybe uninstall the Golang package"
     exit 1
   fi
@@ -401,7 +401,7 @@ go get -u github.com/derekparker/delve/cmd/dlv
 go get -u github.com/github/hub
 
 # shellcheck disable=SC2046
-if ! which ibazel || ! vergte "$IBAZEL_VNO" "$(ibazel 2>&1 | head -1 grep -o '[^v]*$')"
+if ! command -v ibazel || ! vergte "$IBAZEL_VNO" "$(ibazel 2>&1 | head -1 grep -o '[^v]*$')"
 then
   # Manually install ibazel
   mkdir -p "$HOME/bin"
@@ -417,7 +417,7 @@ then
   popd
 fi
 
-if ! which ctags
+if ! command -v ctags
 then
   pushd /tmp
   # Manually install universal ctags. This is a little sketchy- they don't
