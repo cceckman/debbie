@@ -291,7 +291,7 @@ BUILD[graphical]=util::noop
 debbie::gcloud::prepare() {
   if ! grep -q "packages.cloud.google.com" /etc/apt/sources.list.d/* /etc/apt/sources.list
   then
-    CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+    CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -cs)"
     echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
   fi
@@ -304,5 +304,32 @@ debbie::gcloud::install() {
 PREPARE[gcloud]=debbie::gcloud::prepare
 INSTALL[gcloud]=debbie::gcloud::install
 BUILD[gcloud]=util::noop
+
+debbie::docker::prepare() {
+  if ! grep -q "download.docker.com" /etc/apt/sources.list.d/* /etc/apt/sources.list
+  then
+    curl -fsSL https://download.docker.com/linux/debian/gpg \
+    | sudo apt-key add -v - 2>&1 \
+    | grep 8D81803C0EBFCD88 \
+    || {
+      echo >&2 "Bad key for Docker!"
+      exit 1
+    }
+    echo "deb https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+  fi
+}
+
+debbie::docker::install() {
+  util::install_packages docker-ce docker-ce-cli containerd.io
+}
+
+debbie::docker::build() {
+  sudo groupadd -f docker
+  sudo gpasswd -a "$USER" docker
+}
+
+PREPARE[docker]=debbie::docker::prepare
+INSTALL[docker]=debbie::docker::install
+BUILD[docker]=debbie::docker::build
 
 main "$@"
