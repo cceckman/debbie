@@ -400,7 +400,7 @@ go get -u github.com/derekparker/delve/cmd/dlv
 go get -u github.com/github/hub
 
 # shellcheck disable=SC2046
-if ! command -v ibazel || ! vergte "$IBAZEL_VNO" "$(ibazel 2>&1 | head -1 grep -o '[^v]*$')"
+if ! command -v ibazel || ! vergte "$IBAZEL_VNO" "$(ibazel 2>&1 | head -1 | grep -o '[^v]*$')"
 then
   # Manually install ibazel
   mkdir -p "$HOME/bin"
