@@ -22,7 +22,7 @@ declare -A INSTALL
 declare -A BUILD
 export PREPARE INSTALL BUILD
 
-DEFAULT_FEATURES="+core +graphical +tmux"
+DEFAULT_FEATURES="+core +home +tmux +tldr +graphical"
 
 util::all_features() {
   for feature in "${!PREPARE[@]}"
@@ -251,6 +251,10 @@ debbie::core::install() {
     whois \
     zip \
     zsh
+
+  # PIP packages as well
+  python3 -m pip install --user wheel setuptools
+  python3 -m pip install --user pyyaml pathspec yamllint
 }
 debbie::core::build() {
   # Set locale to US
@@ -291,6 +295,42 @@ debbie::graphical::install() {
 PREPARE[graphical]=util::noop
 INSTALL[graphical]=debbie::graphical::install
 BUILD[graphical]=util::noop
+
+## home
+debbie::home::install() {
+  pushd "$HOME"
+  {
+    if ! test -d ".git"
+    then
+      git clone https://github.com/cceckman/Tilde.git
+      mv Tilde/.git .
+      rm -rf Tilde
+      git reset --hard
+      git submodule update --recursive --init
+    fi
+
+    if "$(git remote get-url origin)" = "https://github.com/cceckman/Tilde.git"
+    then
+      git remote set-url origin git@github.com:cceckman/Tilde.git
+    fi
+  }
+  popd
+}
+
+debbie::home::build() {
+  # Use `sudo` so it doesn't prompt to enter $USER's password againa
+  sudo chsh -s "$(command -v zsh)" "$USER"
+  # Get public key used for signing.
+  curl -Lo- \
+    https://raw.githubusercontent.com/cceckman/debbie/master/pubkeys.pgp \
+    | gpg --import
+  # Create undo & swap Vim directories, to keep tem out of the working dirs
+  mkdir -p "$HOME/.vim/swap" "$HOME/.vim/undo"
+}
+
+PREPARE[home]=util::noop
+INSTALL[home]=debbie::home::install
+BUILD[home]=debbie::home::build
 
 ## gcloud
 debbie::gcloud::prepare() {
@@ -410,20 +450,23 @@ BUILD[tmux]=debbie::tmux::build
 ## golang
 debbie::golang::install() {
   GO_VNO="1.12.7"
-  if command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)"
+
+  # We don't early-exit here so that we run :GoInstallBinaries at the end
+  if ! (command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)")
   then
+    declare -A GOARCH
+    GOARCH[x86_64]="amd64"
+    GOTAR=/tmp/golang.tar.gz
+    curl -o "$GOTAR" "https://storage.googleapis.com/golang/go${GO_VNO}.linux-${GOARCH[$(uname -m)]}.tar.gz"
+    sudo rm -rf /usr/local/go
+    sudo tar -C /usr/local -xzf "$GOTAR"
+    rm "$GOTAR"
+    export PATH="/usr/local/go/bin:$PATH"
+  else
     echo "Have $(go version), skipping build"
-    return
   fi
 
-  declare -A GOARCH
-  GOARCH[x86_64]="amd64"
-  GOTAR=/tmp/golang.tar.gz
-  curl -o "$GOTAR" "https://storage.googleapis.com/golang/go${GO_VNO}.linux-${GOARCH[$(uname -m)]}.tar.gz"
-  sudo rm -rf /usr/local/go
-  sudo tar -C /usr/local -xzf "$GOTAR"
-  rm "$GOTAR"
-  export PATH="/usr/local/go/bin:$PATH"
+  vim +GoInstallBinaries +qall
 }
 debbie::golang::build() {
   # Collect tools for use with Go.
@@ -435,5 +478,44 @@ debbie::golang::build() {
 PREPARE[golang]=util::noop
 INSTALL[golang]=debbie::golang::install
 BUILD[golang]=debbie::golang::build
+
+## ssh-target
+debbie::ssh-target::install() {
+  util::install_packages openssh-server
+}
+debbie::ssh-target::build() {
+  # Important for useful GPG agent forwarding:
+  # Unbind sockets when client disconnects
+  SLBU="StreamLocalBindUnlink yes"
+  if ! test -f /etc/ssh/sshd_config || ! grep -q "$SLBU" /etc/ssh/sshd_config
+  then
+    echo "$SLBU" | sudo tee -a /etc/ssh/sshd_config >/dev/null
+  fi
+}
+
+PREPARE[ssh-target]=util::noop
+INSTALL[ssh-target]=debbie::ssh-target::install
+BUILD[ssh-target]=debbie::ssh-target::build
+
+## tldr
+debbie::tldr::install() {
+  # Pinning the version by content SHA, so we'll error if there's an update we don't know of.
+  curl -Lo ~/scripts/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr
+  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "33ff4b7c0680e85157b3020882ef8b51eabbe5adccf7059cc4df3a5e03946833"
+  then
+    echo >&2 "Unexpected contents for ~/scripts/tldr"
+    echo >&2 "Check it out, and update debbie.sh if it's OK."
+    exit 1
+  fi
+  chmod +x ~/scripts/tldr
+}
+PREPARE[tldr]=util::noop
+INSTALL[tldr]=debbie::tldr::install
+BUILD[tldr]=util::noop
+
+## TODO: LSPs
+## TODO: ctags? Removed because of the above TODO; LSPs are the new thing.
+## TODO: Rust?
+## TODO: SSH keys? I'm doing more that's rooted in one set, but there's some advice around that says I shouldn't.
 
 main "$@"
