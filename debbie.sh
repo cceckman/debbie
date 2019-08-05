@@ -22,7 +22,7 @@ declare -A INSTALL
 declare -A BUILD
 export PREPARE INSTALL BUILD
 
-DEFAULT_FEATURES="+core +graphical +gcloud"
+DEFAULT_FEATURES="+core +graphical +tmux"
 
 util::all_features() {
   for feature in "${!PREPARE[@]}"
@@ -195,6 +195,7 @@ util::install_packages() {
     install "$@"
 }
 
+## prestage
 debbie::prestage::install() {
   sudo apt-get update
   sudo apt-get upgrade
@@ -203,6 +204,7 @@ PREPARE[prestage]=util::noop
 INSTALL[prestage]=debbie::prestage::install
 BUILD[prestage]=util::noop
 
+## core
 debbie::core::install() {
   util::install_packages \
     locales \
@@ -263,8 +265,10 @@ PREPARE[core]=util::noop
 INSTALL[core]=debbie::core::install
 BUILD[core]=debbie::core::build
 
+## graphical
 debbie::graphical::install() {
   util::install_packages \
+    chromium \
     feh \
     fonts-powerline \
     i3 \
@@ -288,6 +292,7 @@ PREPARE[graphical]=util::noop
 INSTALL[graphical]=debbie::graphical::install
 BUILD[graphical]=util::noop
 
+## gcloud
 debbie::gcloud::prepare() {
   if ! grep -q "packages.cloud.google.com" /etc/apt/sources.list.d/* /etc/apt/sources.list
   then
@@ -305,6 +310,7 @@ PREPARE[gcloud]=debbie::gcloud::prepare
 INSTALL[gcloud]=debbie::gcloud::install
 BUILD[gcloud]=util::noop
 
+## docker
 debbie::docker::prepare() {
   if ! grep -q "download.docker.com" /etc/apt/sources.list.d/* /etc/apt/sources.list
   then
@@ -331,5 +337,103 @@ debbie::docker::build() {
 PREPARE[docker]=debbie::docker::prepare
 INSTALL[docker]=debbie::docker::install
 BUILD[docker]=debbie::docker::build
+
+## bazel
+debbie::bazel::prepare() {
+  if ! grep -q "https://storage.googleapis.com/bazel-apt" /etc/apt/sources.list.d/* /etc/apt/sources.list
+  then
+    echo "deb https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+    # TODO: Add utils:: to align with docker, gcloud; verify key
+    curl https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg | sudo apt-key add  -
+  fi
+}
+debbie::bazel::install() {
+  util::install_packages bazel
+}
+debbie::bazel::build() {
+  set -x
+  go get -u github.com/bazelbuild/buildtools/buildifier
+  set +x
+
+  IBAZEL_VNO="0.10.2"
+  if command -v ibazel >/dev/null && util::vergte "$IBAZEL_VNO" "$(ibazel 2>&1 | head -1 | grep -o '[^v]*$')"
+  then
+    return
+  fi
+  # Manual install of ibazel
+  mkdir -p "$HOME/bin"
+  pushd /tmp
+  {
+    rm -rf ibazel
+    git clone git://github.com/bazelbuild/bazel-watcher ibazel
+    cd ibazel
+    bazel build //ibazel
+    cp bazel-bin/ibazel/*_pure_stripped/ibazel "$HOME/bin/ibazel"
+    chmod 0744 "$HOME/bin/ibazel" # allow later rewriting, e.g. upgrade
+  }
+  popd
+}
+PREPARE[bazel]=debbie::bazel::prepare
+INSTALL[bazel]=debbie::bazel::install
+BUILD[bazel]=debbie::bazel::build
+
+## tmux
+debbie::tmux::build() {
+  TMUX_VNO="2.9a"
+  if command -v tmux >/dev/null && util::vergte "$TMUX_VNO" "$(tmux -V)"
+  then
+    echo "Have tmux $(tmux -V), skipping build"
+    return
+  fi
+  echo "Building & installing tmux $TMUX_VNO"
+  pushd /tmp
+  {
+    # Build dependencies; should be apt-get build-dep tmux
+    sudo apt-get -y install libncurses5-dev automake libevent-dev
+    TMUXTAR=/tmp/tmux.tar.gz
+    curl -Lo $TMUXTAR https://github.com/tmux/tmux/archive/${TMUX_VNO}.tar.gz
+    tar -xvf $TMUXTAR
+    cd tmux-$TMUX_VNO
+    sh autogen.sh
+    ./configure
+    make
+    sudo make install
+    sudo apt-get -y remove tmux
+    rm -rf /tmp/tmux*
+  }
+  popd
+}
+PREPARE[tmux]=util::noop
+INSTALL[tmux]=util::noop
+BUILD[tmux]=debbie::tmux::build
+
+## golang
+debbie::golang::install() {
+  GO_VNO="1.12.7"
+  if command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)"
+  then
+    echo "Have $(go version), skipping build"
+    return
+  fi
+
+  declare -A GOARCH
+  GOARCH[x86_64]="amd64"
+  GOTAR=/tmp/golang.tar.gz
+  curl -o "$GOTAR" "https://storage.googleapis.com/golang/go${GO_VNO}.linux-${GOARCH[$(uname -m)]}.tar.gz"
+  sudo rm -rf /usr/local/go
+  sudo tar -C /usr/local -xzf "$GOTAR"
+  rm "$GOTAR"
+  export PATH="/usr/local/go/bin:$PATH"
+}
+debbie::golang::build() {
+  # Collect tools for use with Go.
+  set -x
+  go get -u github.com/derekparker/delve/cmd/dlv
+  go get -u github.com/github/hub
+  set +x
+}
+PREPARE[golang]=util::noop
+INSTALL[golang]=debbie::golang::install
+BUILD[golang]=debbie::golang::build
 
 main "$@"
