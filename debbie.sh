@@ -198,7 +198,7 @@ util::install_packages() {
 ## prestage
 debbie::prestage::install() {
   sudo apt-get update
-  sudo apt-get upgrade
+  sudo apt-get upgrade -y
 }
 PREPARE[prestage]=util::noop
 INSTALL[prestage]=debbie::prestage::install
