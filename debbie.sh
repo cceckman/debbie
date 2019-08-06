@@ -352,7 +352,7 @@ debbie::home::install() {
       git submodule update --recursive --init
     fi
 
-    if "$(git remote get-url origin)" = "https://github.com/cceckman/Tilde.git"
+    if test "$(git remote get-url origin)" = "https://github.com/cceckman/Tilde.git"
     then
       git remote set-url origin git@github.com:cceckman/Tilde.git
     fi
