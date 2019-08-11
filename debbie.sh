@@ -208,7 +208,7 @@ debbie::prestage::prepare() {
   # They can rely on https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html
   # (e.g. `tee`, `grep`), `apt` (assume Debian), and `sudo` (assume it's installed),
   # but these are still needed.
-  sudo apt-get install -y lsb-release curl
+  sudo apt-get install -y lsb-release curl gnupg2
 }
 debbie::prestage::install() {
   sudo apt-get update
