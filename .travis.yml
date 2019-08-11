@@ -3,12 +3,10 @@ services:
   - docker
 before_install:
   - docker pull debian:buster-slim
-  - dockerfile build -t debbie-test -f Dockerfile.base .
+  - docker build -t debbie-test -f Dockerfile.base .
 
 env:
   - FEATURES=""
-  - FEATURES="+all"
-  - FEATURES="+all -graphical"
 
 script:
   - docker run debbie-test $FEATURES
