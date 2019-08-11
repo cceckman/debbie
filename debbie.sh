@@ -97,11 +97,11 @@ main() {
            FEATURES+=("$feature")
            ;;
       '-') declare -a newFeatures
-           for i in "${FEATURES[@]}"
+           for existing_feature in "${FEATURES[@]}"
            do
-             if test "${FEATURES[$i]}" != "$feature"
+             if test "$existing_feature" != "$feature"
              then
-               newFeatures+=("$feature")
+               newFeatures+=("$existing_feature")
              fi
            done
            FEATURES=("${newFeatures[@]}")
