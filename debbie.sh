@@ -133,6 +133,9 @@ main() {
   done
   if "$ERR"; then exit 1; fi
 
+  # Some features have interdependencies, e.g. bazel depends on go.
+  # TODO: Remove the interdependencies, or enforce them.
+
   # We've validated that each feature & stage exists.
   # Do some general checking:
   util::preflight
