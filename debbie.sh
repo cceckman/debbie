@@ -488,6 +488,8 @@ BUILD[tmux]=debbie::tmux::build
 
 ## golang
 debbie::golang::install() {
+  util::install_packages vim git
+
   GO_VNO="1.12.7"
 
   # We don't early-exit here so that we run :GoInstallBinaries at the end
@@ -505,7 +507,7 @@ debbie::golang::install() {
     echo "Have $(go version), skipping build"
   fi
 
-  vim +GoInstallBinaries +qall
+  vim "+silent GoInstallBinaries" +qall >/dev/null </dev/null
 }
 debbie::golang::build() {
   # Collect tools for use with Go.
