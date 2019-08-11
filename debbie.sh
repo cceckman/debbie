@@ -203,8 +203,12 @@ debbie::prestage::prepare() {
   then
     mkdir -m 0755 /etc/apt/sources.list.d
   fi
-  # And make sure they can get the right release when adding the repositories.
-  sudo apt-get install -y lsb-release
+  # And make sure they can get the right release & keys when adding
+  # the repositories.
+  # They can rely on https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html
+  # (e.g. `tee`, `grep`), `apt` (assume Debian), and `sudo` (assume it's installed),
+  # but these are still needed.
+  sudo apt-get install -y lsb-release curl
 }
 debbie::prestage::install() {
   sudo apt-get update
@@ -218,7 +222,6 @@ BUILD[prestage]=util::noop
 debbie::core::install() {
   util::install_packages \
     locales \
-    lsb-release \
     git \
     acpi \
     arping \
