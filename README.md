@@ -1,6 +1,8 @@
 # debbie
 Configure a Debian / Ubuntu (apt) machine to my liking.
 
+[![Build Status](https://travis-ci.org/cceckman/debbie.svg?branch=master)](https://travis-ci.org/cceckman/debbie)
+
 ### What's the command I'm looking for?
 From a Debian or Ubuntu image:
 
