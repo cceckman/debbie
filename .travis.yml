@@ -7,5 +7,7 @@ before_install:
   - docker build -t debbie-test -f Dockerfile.base .
 env:
   - FEATURES=""
+  - FEATURES="-all +graphical"
+  - FEATURES="+all"
 script:
   - docker run debbie-test $FEATURES
