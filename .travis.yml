@@ -6,10 +6,9 @@ before_install:
   - dockerfile build -t debbie-test -f Dockerfile.base .
 
 env:
-  - MODULES=""
-  - MODULES="+all"
-  - MODULES="-graphical"
-  - MODULES="-core -graphical"
+  - FEATURES=""
+  - FEATURES="+all"
+  - FEATURES="+all -graphical"
 
 script:
-  - docker run debbie-test $MODULES
+  - docker run debbie-test $FEATURES
