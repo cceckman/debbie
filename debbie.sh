@@ -387,7 +387,7 @@ BUILD[home]=debbie::home::build
 
 ## gcloud
 debbie::gcloud::prepare() {
-  if ! grep -q "packages.cloud.google.com" /etc/apt/sources.list.d/* /etc/apt/sources.list
+  if ! grep -Rq "packages.cloud.google.com" /etc/apt/sources.list /etc/apt/sources.list.d
   then
     CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -cs)"
     echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
@@ -405,7 +405,7 @@ BUILD[gcloud]=util::noop
 
 ## docker
 debbie::docker::prepare() {
-  if ! grep -q "download.docker.com" /etc/apt/sources.list.d/* /etc/apt/sources.list
+  if ! grep -Rq "download.docker.com" /etc/apt/sources.list /etc/apt/sources.list.d
   then
     curl -fsSL https://download.docker.com/linux/debian/gpg \
     | sudo apt-key add -v - 2>&1 \
@@ -433,7 +433,7 @@ BUILD[docker]=debbie::docker::build
 
 ## bazel
 debbie::bazel::prepare() {
-  if ! grep -q "https://storage.googleapis.com/bazel-apt" /etc/apt/sources.list.d/* /etc/apt/sources.list
+  if ! grep -Rq "https://storage.googleapis.com/bazel-apt" /etc/apt/sources.list /etc/apt/sources.list.d
   then
     echo "deb https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
     # TODO: Add utils:: to align with docker, gcloud; verify key
