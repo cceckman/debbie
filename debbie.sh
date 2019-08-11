@@ -196,6 +196,16 @@ util::install_packages() {
 }
 
 ## prestage
+debbie::prestage::prepare() {
+  # "prepare" steps are usually installing new repositories.
+  # Make sure there's a directory to install into.
+  if ! test -d /etc/apt/sources.list.d
+  then
+    mkdir -m 0755 /etc/apt/sources.list.d
+  fi
+  # And make sure they can get the right release when adding the repositories.
+  sudo apt-get install -y lsb-release
+}
 debbie::prestage::install() {
   sudo apt-get update
   sudo apt-get upgrade -y
