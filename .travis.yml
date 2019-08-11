@@ -1,12 +1,11 @@
 ---
+language: minimal
 services:
   - docker
 before_install:
   - docker pull debian:buster-slim
   - docker build -t debbie-test -f Dockerfile.base .
-
 env:
   - FEATURES=""
-
 script:
   - docker run debbie-test $FEATURES
