@@ -307,53 +307,33 @@ debbie::graphical::install() {
     xss-lock \
     xterm \
     yubikey-personalization
+
+  debbie::graphical::install::firacode
 }
 
 ### Firacode helper for graphical target;
 ### Once de6dde848269fdd6360e5e7dce4874ce62fbed7f makes it into the prebuilt changes
 ### we can do a much lighter-weight install.
-debbie::graphical::build::firacode() {
+debbie::graphical::install::firacode() {
   if fc-list | grep -q 'Fira Code'
   then
     echo "Fira code already installed, skipping build..."
     return
   fi
 
-  pushd /tmp
-  {
-    rm -rf FiraCode
-    git clone https://github.com/tonsky/FiraCode.git
-    cd FiraCode
-    sudo apt-get install -y \
-      libcairo2-dev pkg-config ttfautohint woff2 sfnt2woff-zopfli
-    python3 -m pip install --user virtualenv
-    python3 -m virtualenv venv
-
-    # shellcheck disable=SC1091
-    source venv/bin/activate
-    python3 -m pip install -U \
-      Pillow==5.4.1 idna==2.8 requests==2.21.0 urllib3==1.24.1
-    PKG_CONFIG_PATH="$(command -v pkg-config)"
-    export PKG_CONFIG_PATH
-    python3 -m pip install pycairo
-    python3 -m pip install git+https://github.com/googlefonts/gftools
-    python3 -m pip install fontmake fontbakery
-
-    ./script/build
-
-    fonts_dir="${HOME}/.local/share/fonts"
-    mkdir -p "$fonts_dir"
-    for type in Bold Light Medium Regular Retina; do
-      cp "distr/ttf/FiraCode-${type}.ttf" "$fonts_dir"
-    done
-    fc-cache -f
-  }
+  fonts_dir="${HOME}/.local/share/fonts"
+  mkdir -p "$fonts_dir"
+  pushd "$fonts_dir"
+  for type in Bold Light Medium Regular Retina; do
+    curl -LO "https://github.com/cceckman/FiraCode/raw/master/distr/ttf/FiraCode-${type}.ttf"
+  done
   popd
+  fc-cache -f
 }
 
 PREPARE[graphical]=util::noop
 INSTALL[graphical]=debbie::graphical::install
-BUILD[graphical]=debbie::graphical::build::firacode
+BUILD[graphical]=util::noop
 
 ## home
 debbie::home::install() {
