@@ -214,7 +214,7 @@ debbie::prestage::install() {
   sudo apt-get update
   sudo apt-get upgrade -y
 }
-PREPARE[prestage]=util::noop
+PREPARE[prestage]=debbie::prestage::prepare
 INSTALL[prestage]=debbie::prestage::install
 BUILD[prestage]=util::noop
 
@@ -269,6 +269,7 @@ debbie::core::install() {
   python3 -m pip install --user wheel setuptools
   python3 -m pip install --user pyyaml pathspec yamllint
 }
+
 debbie::core::build() {
   # Set locale to US
   if ! locale | grep -q 'LANG=en_US.UTF-8'
