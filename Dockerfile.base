@@ -10,4 +10,4 @@ RUN chmod 0755 debbie.sh
 
 USER docker
 ENV USER=docker
-ENTRYPOINT ./debbie.sh
+ENTRYPOINT ["./debbie.sh"]
