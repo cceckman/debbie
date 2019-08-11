@@ -1,0 +1,15 @@
+---
+services:
+  - docker
+before_install:
+  - docker pull debian:buster-slim
+  - dockerfile build -t debbie-test -f Dockerfile.base .
+
+env:
+  - MODULES=""
+  - MODULES="+all"
+  - MODULES="-graphical"
+  - MODULES="-core -graphical"
+
+script:
+  - docker run debbie-test $MODULES

@@ -1,0 +1,13 @@
+FROM debian:buster-slim
+
+RUN apt-get update && apt-get install -y sudo
+RUN adduser --disabled-password --gecos '' docker \
+ && adduser docker sudo \
+ && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+COPY debbie.sh .
+RUN chmod 0755 debbie.sh
+
+USER docker
+ENV USER=docker
+ENTRYPOINT ./debbie.sh
