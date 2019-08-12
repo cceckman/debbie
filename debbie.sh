@@ -556,7 +556,22 @@ BUILD[tldr]=util::noop
 
 ## rust
 debbie::rust::install() {
-  util::install_packages cargo rustc
+  # There are cargo and rustc packages,
+  # but we need access to nightly and src in order to xbuild.
+  pushd /tmp
+  {
+    curl https://sh.rustup.rs -sSf -o rustup.sh
+    if ! test "$(sha256sum rustup.sh | cut -d' ' -f1)" = "9bbf4987fc0b46658249c176004271bebc3126530cb2aff347776a9549a48321"
+    then
+      echo >&2 "Unexpected contents for /tmp/rustup.sh"
+      echo >&2 "Check it out, and update debbie.sh if it's OK."
+      exit 1
+    fi
+    chmod +x rustup.sh
+    ./rustup.sh -y --no-modify-path
+    rustup component add rustfmt
+  }
+  popd
 }
 PREPARE[rust]=util::noop
 INSTALL[rust]=debbie::rust::install
