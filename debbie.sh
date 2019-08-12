@@ -554,6 +554,14 @@ PREPARE[tldr]=util::noop
 INSTALL[tldr]=debbie::tldr::install
 BUILD[tldr]=util::noop
 
+## rust
+debbie::rust::install() {
+  util::install_packages cargo rustc
+}
+PREPARE[rust]=util::noop
+INSTALL[rust]=debbie::rust::install
+BUILD[rust]=util::noop
+
 ## TODO: LSPs
 ## TODO: ctags? Removed because of the above TODO; LSPs are the new thing.
 ## TODO: Rust?
