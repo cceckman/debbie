@@ -249,6 +249,7 @@ debbie::core::install() {
     mlocate \
     mtr \
     net-tools \
+    netcat \
     ntfs-3g \
     parallel \
     parted \
