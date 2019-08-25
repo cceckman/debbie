@@ -254,11 +254,13 @@ debbie::core::install() {
     parted \
     pcscd \
     pkg-config \
+    psmisc \
     python \
     python-gflags \
     python3 \
     python3-pip \
     rsync \
+    socat \
     ssh \
     tcpdump \
     traceroute \
