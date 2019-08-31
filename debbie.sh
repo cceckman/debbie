@@ -572,6 +572,7 @@ debbie::rust::install() {
     fi
     chmod +x rustup.sh
     ./rustup.sh -y --no-modify-path
+    PATH="$HOME/.cargo/bin:$PATH"
     rustup component add rustfmt
   }
   popd
