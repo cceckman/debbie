@@ -581,9 +581,55 @@ PREPARE[rust]=util::noop
 INSTALL[rust]=debbie::rust::install
 BUILD[rust]=util::noop
 
+## fomu tools
+# The binaries in https://github.com/im-tomu/fomu-toolchain are gonna be
+# all in the same, not-really-right place. Install / build from source instead.
+debbie::fomu::install() {
+  # I'd like to build "hotter", i.e. from upstream, but we'll do this for now.
+  FOMU_VNO="1.4"
+  FOMU_HASH="3799925468b163b9da50e531cf75549109dcbf9b8243e220497c04d9e33dd482"
+  mkdir -p "$HOME/bin"
+  pushd /tmp
+  if ! test "$(cat "$HOME/bin/fomu-toolchain/.installed")" = "$FOMU_HASH"
+  then
+    local FILE="fomu-toolchain.tar.gz"
+    local WORDY="fomu-toolchain-linux_x86_64-v${FOMU_VNO}"
+    curl -Lo "$FILE" \
+      "https://github.com/im-tomu/fomu-toolchain/releases/download/v${FOMU_VNO}/${WORDY}.tar.gz"
+    test "$FOMU_HASH" = "$(sha256sum "$FILE" | cut -d' ' -f1)"
+    tar -xf "$FILE"
+    rm -rf "$HOME/bin/fomu-toolchain"
+    mv "${WORDY}" "$HOME/bin/fomu-toolchain"
+    echo "$FOMU_HASH" >"$HOME/bin/fomu-toolchain/.installed"
+  fi
+  # Ensure we have permissions:
+  {
+    sudo groupadd plugdev || true
+    sudo usermod -a -G plugdev "$USER" || true
+    local UDEV="/etc/udev/rules.d/99-fomu.rules"
+    cat >/tmp/fomu-udev-rules <<HRD
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="5bf0", MODE="0664", GROUP="plugdev"
+HRD
+
+    if ! { test -e "$UDEV" && test "$(cat /tmp/fomu-udev-rules)" = "$(cat "$UDEV")" ; }
+    then
+      # This is an OK cat! shellcheck complains about it either way!
+      # shellcheck disable=SC2002
+      cat /tmp/fomu-udev-rules | sudo tee  "$UDEV"
+      sudo udevadm control --reload-rules
+      sudo udevadm trigger
+    fi
+  }
+
+  popd
+}
+PREPARE[fomu]=util::noop
+INSTALL[fomu]=debbie::fomu::install
+BUILD[fomu]=util::noop
+
+
 ## TODO: LSPs
 ## TODO: ctags? Removed because of the above TODO; LSPs are the new thing.
-## TODO: Rust?
 ## TODO: SSH keys? I'm doing more that's rooted in one set, but there's some advice around that says I shouldn't.
 
 main "$@"
