@@ -564,7 +564,7 @@ debbie::rust::install() {
   pushd /tmp
   {
     curl https://sh.rustup.rs -sSf -o rustup.sh
-    if ! test "$(sha256sum rustup.sh | cut -d' ' -f1)" = "9bbf4987fc0b46658249c176004271bebc3126530cb2aff347776a9549a48321"
+    if ! test "$(sha256sum rustup.sh | cut -d' ' -f1)" = "5b4b37114fe25215224fb53b6a635b59d01a0377c5e9e4d6b553035ec695cdd3"
     then
       echo >&2 "Unexpected contents for /tmp/rustup.sh"
       echo >&2 "Check it out, and update debbie.sh if it's OK."
