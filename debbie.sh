@@ -493,7 +493,7 @@ BUILD[tmux]=debbie::tmux::build
 debbie::golang::install() {
   util::install_packages vim git
 
-  GO_VNO="1.12.7"
+  GO_VNO="1.13"
 
   # We don't early-exit here so that we run :GoInstallBinaries at the end
   if ! (command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)")
@@ -646,10 +646,10 @@ debbie::redo::build(){
       --depth=1 \
       --single-branch
     cd redo
-    ./do -j$($(nproc)) test
+    ./do -j"$(nproc)" test
     # Instructions don't have -E, "preserve environment",
     # but it looks like it's necessary.
-    DESTDIR= PREFIX=/usr/local sudo -E ./do install
+    DESTDIR='' PREFIX=/usr/local sudo -E ./do install
   }
   popd
 }
