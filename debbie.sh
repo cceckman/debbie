@@ -627,6 +627,36 @@ PREPARE[fomu]=util::noop
 INSTALL[fomu]=debbie::fomu::install
 BUILD[fomu]=util::noop
 
+debbie::redo::install() {
+  util::install_packages \
+    python2.7 \
+    python-setproctitle
+}
+debbie::redo::build(){
+  local version="0.42"
+  if command -v redo && test "$(redo --version)" = "$version"
+  then
+    return 0
+  fi
+  pushd /tmp
+  {
+    git clone https://github.com/apenwarr/redo.git \
+      --branch "redo-${version}" \
+      --depth=1 \
+      --single-branch
+    cd redo
+    ./do -j$($(nproc)) test
+    # Instructions don't have -E, "preserve environment",
+    # but it looks like it's necessary.
+    DESTDIR= PREFIX=/usr/local sudo -E ./do install
+  }
+  popd
+}
+
+PREPARE[redo]=util::noop
+INSTALL[redo]=debbie::redo::install
+BUILD[redo]=debbie::redo::build
+
 
 ## TODO: LSPs
 ## TODO: ctags? Removed because of the above TODO; LSPs are the new thing.
