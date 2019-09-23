@@ -623,9 +623,10 @@ HRD
 
   popd
 }
-PREPARE[fomu]=util::noop
-INSTALL[fomu]=debbie::fomu::install
-BUILD[fomu]=util::noop
+# Disabled per issue #10
+# PREPARE[fomu]=util::noop
+# INSTALL[fomu]=debbie::fomu::install
+# BUILD[fomu]=util::noop
 
 debbie::redo::install() {
   util::install_packages \
