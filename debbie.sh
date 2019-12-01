@@ -385,7 +385,7 @@ debbie::gcloud::prepare() {
 }
 
 debbie::gcloud::install() {
-  util::install_packages google-cloud-sdk kubectl
+  util::install_packages google-cloud-sdk kubectl google-cloud-sdk-app-engine-go
 }
 
 PREPARE[gcloud]=debbie::gcloud::prepare
