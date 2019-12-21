@@ -22,7 +22,7 @@ declare -A INSTALL
 declare -A BUILD
 export PREPARE INSTALL BUILD
 
-DEFAULT_FEATURES="+core +home +tmux +tldr +graphical +redo"
+DEFAULT_FEATURES="+core +home +tmux +tldr +graphical"
 
 util::all_features() {
   for feature in "${!PREPARE[@]}"
@@ -256,8 +256,6 @@ debbie::core::install() {
     pcscd \
     pkg-config \
     psmisc \
-    python \
-    python-gflags \
     python3 \
     python3-pip \
     rsync \
@@ -629,8 +627,8 @@ HRD
 
 debbie::redo::install() {
   util::install_packages \
-    python2.7 \
-    python-setproctitle
+    python3 \
+    python3-setproctitle
 }
 debbie::redo::build(){
   local version="0.42"
