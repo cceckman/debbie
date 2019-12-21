@@ -493,7 +493,7 @@ BUILD[tmux]=debbie::tmux::build
 debbie::golang::install() {
   util::install_packages vim git
 
-  GO_VNO="1.13.4"
+  GO_VNO="1.13.5"
 
   # We don't early-exit here so that we run :GoInstallBinaries at the end
   if ! (command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)")
@@ -509,14 +509,13 @@ debbie::golang::install() {
   else
     echo "Have $(go version), skipping build"
   fi
-
-  vim "+silent GoInstallBinaries" +qall >/dev/null </dev/null
 }
 debbie::golang::build() {
   # Collect tools for use with Go.
   set -x
   go get -u github.com/derekparker/delve/cmd/dlv
   go get -u github.com/github/hub
+  go get -u golang.org/x/tools/cmd/gopls
   set +x
 }
 PREPARE[golang]=util::noop
