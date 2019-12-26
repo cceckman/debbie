@@ -316,19 +316,34 @@ debbie::graphical::install() {
 ### Once de6dde848269fdd6360e5e7dce4874ce62fbed7f makes it into the prebuilt changes
 ### we can do a much lighter-weight install.
 debbie::graphical::install::firacode() {
-  if fc-list | grep -q 'Fira Code'
+  FIRA_VNO="1.207"
+
+  # Check presence...
+  if FONT=$(fc-list | grep -o '[^ ]*FiraCode-Regular.ttf')
   then
-    echo "Fira code already installed, skipping build..."
-    return
+    # Check version.
+    FONTVERSION="$(fc-query -f '%{fontversion}' $FONT)"
+    # Convert fixed-point to string float
+    FONTVERSION="$(echo "scale=3; $FONTVERSION / 65536.0" | bc)"
+    # Convert fixed-point to a string expression
+    ISGTE="$(echo "scale=3; $FONTVERSION >= $FIRA_VNO" | bc)"
+    if test "$ISGTE" -eq 1
+    then
+      echo "No update needed to Fira Code"
+      echo "(version $FONTVERSION >= $FIRA_VNO)"
+      return
+    fi
   fi
 
   fonts_dir="${HOME}/.local/share/fonts"
   mkdir -p "$fonts_dir"
-  pushd "$fonts_dir"
-  for type in Bold Light Medium Regular Retina; do
-    curl -LO "https://github.com/cceckman/FiraCode/raw/master/distr/ttf/FiraCode-${type}.ttf"
-  done
-  popd
+  TDIR="$(mktemp -d)"
+  curl -Lo "$TDIR/firacode.zip" \
+    "https://github.com/tonsky/FiraCode/releases/download/$FIRA_VNO/FiraCode_${FIRA_VNO}.zip"
+  unzip "$TDIR/firacode.zip" -d "$TDIR" 'ttf/*.ttf'
+  mv -f "$TDIR"/ttf/*.ttf "$fonts_dir"
+  rm -rf "$TDIR"
+
   fc-cache -f
 }
 
