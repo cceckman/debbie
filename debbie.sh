@@ -316,7 +316,7 @@ debbie::graphical::install() {
 ### Once de6dde848269fdd6360e5e7dce4874ce62fbed7f makes it into the prebuilt changes
 ### we can do a much lighter-weight install.
 debbie::graphical::install::firacode() {
-  FIRA_VNO="1.207"
+  FIRA_VNO="2"
 
   # Check presence...
   if FONT=$(fc-list | grep -o '[^ ]*FiraCode-Regular.ttf')
