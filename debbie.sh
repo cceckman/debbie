@@ -528,7 +528,8 @@ debbie::golang::build() {
   set -x
   go get -u github.com/derekparker/delve/cmd/dlv
   go get -u github.com/github/hub
-  go get -u golang.org/x/tools/cmd/gopls
+  cd $(mktemp -d)
+  GO111MODULE=on go get golang.org/x/tools/gopls@latest
   set +x
 }
 PREPARE[golang]=util::noop
