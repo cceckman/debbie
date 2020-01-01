@@ -558,7 +558,7 @@ BUILD[ssh-target]=debbie::ssh-target::build
 debbie::tldr::install() {
   # Pinning the version by content SHA, so we'll error if there's an update we don't know of.
   curl -Lo ~/scripts/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr
-  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "33ff4b7c0680e85157b3020882ef8b51eabbe5adccf7059cc4df3a5e03946833"
+  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "6bbdb970da7dd7688511f31fc73a15156437a596b1606ac4e310b31751515e2e"
   then
     echo >&2 "Unexpected contents for ~/scripts/tldr"
     echo >&2 "Check it out, and update debbie.sh if it's OK."
@@ -577,7 +577,7 @@ debbie::rust::install() {
   pushd /tmp
   {
     curl https://sh.rustup.rs -sSf -o rustup.sh
-    if ! test "$(sha256sum rustup.sh | cut -d' ' -f1)" = "5b4b37114fe25215224fb53b6a635b59d01a0377c5e9e4d6b553035ec695cdd3"
+    if ! test "$(sha256sum rustup.sh | cut -d' ' -f1)" = "79552216b4ccab5f773a981bc156b38b004a4f94ac5d2b83f8e127020a4d0bfe"
     then
       echo >&2 "Unexpected contents for /tmp/rustup.sh"
       echo >&2 "Check it out, and update debbie.sh if it's OK."
