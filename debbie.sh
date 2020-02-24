@@ -474,7 +474,7 @@ BUILD[bazel]=debbie::bazel::build
 
 ## tmux
 debbie::tmux::build() {
-  TMUX_VNO="2.9a"
+  TMUX_VNO="3.0a"
   if command -v tmux >/dev/null && util::vergte "$TMUX_VNO" "$(tmux -V)"
   then
     echo "Have tmux $(tmux -V), skipping build"
@@ -558,7 +558,7 @@ BUILD[ssh-target]=debbie::ssh-target::build
 debbie::tldr::install() {
   # Pinning the version by content SHA, so we'll error if there's an update we don't know of.
   curl -Lo ~/scripts/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr
-  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "6bbdb970da7dd7688511f31fc73a15156437a596b1606ac4e310b31751515e2e"
+  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "5316325796bf3d0c47441f753e7cf1c5036934746dcce5ba3f68fb14279e9a95"
   then
     echo >&2 "Unexpected contents for ~/scripts/tldr"
     echo >&2 "Check it out, and update debbie.sh if it's OK."
