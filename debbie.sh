@@ -369,9 +369,11 @@ debbie::home::install() {
       git submodule update --recursive --init
     fi
 
-    if test "$(git remote get-url origin)" = "https://github.com/cceckman/Tilde.git"
+    # Leave the pull URL as http, but set the push URL to SSH.
+    # This allows us to continue to pull from a host without SSH keys for the remote.
+    if test "$(git remote get-url --push origin)" = "https://github.com/cceckman/Tilde.git"
     then
-      git remote set-url origin git@github.com:cceckman/Tilde.git
+      git remote set-url --push origin git@github.com:cceckman/Tilde.git
     fi
   }
   popd
