@@ -22,7 +22,7 @@ declare -A INSTALL
 declare -A BUILD
 export PREPARE INSTALL BUILD
 
-DEFAULT_FEATURES="+core +home +tmux +tldr +graphical"
+DEFAULT_FEATURES="+core +build +home +tmux +tldr +graphical"
 
 util::all_features() {
   for feature in "${!PREPARE[@]}"
@@ -221,43 +221,23 @@ PREPARE[prestage]=debbie::prestage::prepare
 INSTALL[prestage]=debbie::prestage::install
 BUILD[prestage]=util::noop
 
-## core
+## core:
+## I want these packages everywhere, including on lightweight/temp remotes.
 debbie::core::install() {
   util::install_packages \
-    locales \
-    git \
-    acpi \
     arping \
-    autoconf \
     bash \
     bc \
-    cgmanager \
-    clang \
-    cmatrix \
-    devscripts \
     dnsutils \
-    dosfstools \
     fping \
-    gdb \
-    graphviz \
+    git \
     ipcalc \
-    jq \
-    libnotify-bin \
-    lldb \
-    llvm \
-    make \
-    mlocate \
+    locales \
     mtr \
     net-tools \
     netcat \
-    ntfs-3g \
-    parallel \
-    parted \
-    pcscd \
-    pkg-config \
     psmisc \
     python3 \
-    python3-pip \
     rsync \
     socat \
     ssh \
@@ -267,11 +247,8 @@ debbie::core::install() {
     whois \
     zip \
     zsh
-
-  # PIP packages as well
-  python3 -m pip install --user wheel setuptools
-  python3 -m pip install --user pyyaml pathspec yamllint
 }
+
 
 debbie::core::build() {
   # Set locale to US
@@ -286,12 +263,43 @@ PREPARE[core]=util::noop
 INSTALL[core]=debbie::core::install
 BUILD[core]=debbie::core::build
 
+## build: packages used to build / debug other things
+debbie::build::install() {
+  util::install_packages \
+    autoconf \
+    cgmanager \
+    clang \
+    devscripts \
+    dosfstools \
+    gdb \
+    graphviz \
+    jq \
+    libnotify-bin \
+    lldb \
+    llvm \
+    make \
+    mlocate \
+    ntfs-3g \
+    parallel \
+    parted \
+    pcscd \
+    pkg-config \
+    python3-pip
+
+  # PIP packages as well
+  python3 -m pip install --user wheel setuptools
+  python3 -m pip install --user pyyaml pathspec yamllint
+}
+
+PREPARE[build]=util::noop
+INSTALL[build]=debbie::build::install
+BUILD[build]=util::noop
+
 ## graphical
 debbie::graphical::install() {
   util::install_packages \
     chromium \
-    feh \
-    fonts-powerline \
+    cmatrix \
     i3 \
     i3status \
     konsole \
@@ -303,8 +311,6 @@ debbie::graphical::install() {
     xbacklight \
     xclip \
     xorg \
-    xscreensaver \
-    xscreensaver-data-extra \
     xss-lock \
     xterm \
     yubikey-personalization
@@ -312,9 +318,7 @@ debbie::graphical::install() {
   debbie::graphical::install::firacode
 }
 
-### Firacode helper for graphical target;
-### Once de6dde848269fdd6360e5e7dce4874ce62fbed7f makes it into the prebuilt changes
-### we can do a much lighter-weight install.
+### Firacode helper for graphical target.
 debbie::graphical::install::firacode() {
   FIRA_VNO="2"
 
@@ -353,6 +357,7 @@ BUILD[graphical]=util::noop
 
 ## home
 debbie::home::install() {
+  util::install_packages git
   pushd "$HOME"
   {
     if ! test -d ".git"
@@ -484,7 +489,7 @@ debbie::tmux::build() {
   pushd /tmp
   {
     # Build dependencies; should be apt-get build-dep tmux
-    sudo apt-get -y install libncurses5-dev automake libevent-dev
+    sudo apt-get -y install libncurses5-dev automake libevent-dev bison
     TMUXTAR=/tmp/tmux.tar.gz
     curl -Lo $TMUXTAR https://github.com/tmux/tmux/archive/${TMUX_VNO}.tar.gz
     tar -xvf $TMUXTAR
@@ -558,7 +563,7 @@ BUILD[ssh-target]=debbie::ssh-target::build
 debbie::tldr::install() {
   # Pinning the version by content SHA, so we'll error if there's an update we don't know of.
   curl -Lo ~/scripts/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr
-  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "5316325796bf3d0c47441f753e7cf1c5036934746dcce5ba3f68fb14279e9a95"
+  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "b53cbea0945b4164e1e4ead41fcb0ebc122d04f7bd098f0d9fedd5d278b61b32"
   then
     echo >&2 "Unexpected contents for ~/scripts/tldr"
     echo >&2 "Check it out, and update debbie.sh if it's OK."
