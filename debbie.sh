@@ -479,7 +479,7 @@ debbie::bazel::build() {
   go get -u github.com/bazelbuild/buildtools/buildifier
   set +x
 
-  IBAZEL_VNO="0.10.2"
+  IBAZEL_VNO="0.12.3"
   if command -v ibazel >/dev/null && util::vergte "$IBAZEL_VNO" "$(ibazel 2>&1 | head -1 | grep -o '[^v]*$')"
   then
     return
@@ -628,8 +628,8 @@ BUILD[rust]=util::noop
 # all in the same, not-really-right place. Install / build from source instead.
 debbie::fomu::install() {
   # I'd like to build "hotter", i.e. from upstream, but we'll do this for now.
-  FOMU_VNO="1.4"
-  FOMU_HASH="3799925468b163b9da50e531cf75549109dcbf9b8243e220497c04d9e33dd482"
+  FOMU_VNO="1.5.5"
+  FOMU_HASH="67bbc422237fe2949a30d85aeee9c53eef99fe9c2f886e895751fde3e2485c6a"
   mkdir -p "$HOME/bin"
   pushd /tmp
   if ! test "$(cat "$HOME/bin/fomu-toolchain/.installed")" = "$FOMU_HASH"
