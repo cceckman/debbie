@@ -245,7 +245,7 @@ debbie::core::install() {
     traceroute \
     vim \
     whois \
-    zip \
+    zip unzip \
     zsh
 }
 
