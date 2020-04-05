@@ -299,6 +299,7 @@ BUILD[build]=util::noop
 debbie::graphical::install() {
   util::install_packages \
     chromium \
+    chromium-sandbox \
     cmatrix \
     i3 \
     i3status \
