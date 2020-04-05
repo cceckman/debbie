@@ -356,6 +356,27 @@ PREPARE[graphical]=util::noop
 INSTALL[graphical]=debbie::graphical::install
 BUILD[graphical]=util::noop
 
+## displaymanager
+## A lower-level than graphical; e.g. starting from minbase.
+debbie::displaymanager::prepare() {
+  cat <<SRC | sudo tee /etc/apt/sources.list.d/deb-nonfree.list
+deb http://deb.debian.org/debian buster non-free
+deb-src http://deb.debian.org/debian buster non-free
+SRC
+
+}
+
+debbie::displaymanager::install() {
+  util::install_packages \
+    lightdm \
+    nvidia-driver \
+    linux-headers-$(uname -r)
+}
+
+PREPARE[displaymanager]=debbie::displaymanager::prepare
+INSTALL[displaymanager]=debbie::displaymanager::install
+BUILD[displaymanager]=util::noop
+
 ## home
 debbie::home::install() {
   util::install_packages git
