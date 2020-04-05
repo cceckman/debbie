@@ -535,7 +535,7 @@ BUILD[tmux]=debbie::tmux::build
 debbie::golang::install() {
   util::install_packages vim git
 
-  GO_VNO="1.13.5"
+  GO_VNO="1.14.1"
 
   # We don't early-exit here so that we run :GoInstallBinaries at the end
   if ! (command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)")
@@ -676,7 +676,7 @@ debbie::redo::install() {
     python3-setproctitle
 }
 debbie::redo::build(){
-  local version="0.42"
+  local version="0.42a"
   if command -v redo && test "$(redo --version)" = "$version"
   then
     return 0
