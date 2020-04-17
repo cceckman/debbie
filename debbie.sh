@@ -360,8 +360,8 @@ BUILD[graphical]=util::noop
 ## A lower-level than graphical; e.g. starting from minbase.
 debbie::displaymanager::prepare() {
   cat <<SRC | sudo tee /etc/apt/sources.list.d/deb-nonfree.list
-deb http://deb.debian.org/debian buster non-free
-deb-src http://deb.debian.org/debian buster non-free
+deb http://deb.debian.org/debian buster non-free contrib
+deb-src http://deb.debian.org/debian buster non-free contrib
 SRC
 
 }
