@@ -321,6 +321,7 @@ debbie::graphical::install() {
     libanyevent-i3-perl \
     redshift \
     scdaemon \
+    unzip \
     vim-gtk \
     wireshark \
     xbacklight \
@@ -432,12 +433,11 @@ BUILD[home]=debbie::home::build
 
 ## gcloud
 debbie::gcloud::prepare() {
-  if ! grep -Rq "packages.cloud.google.com" /etc/apt/sources.list /etc/apt/sources.list.d
-  then
-    CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -cs)"
-    echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
-    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-  fi
+  echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+
+  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+
+  sudo apt-get update && sudo apt-get install google-cloud-sdk
 }
 
 debbie::gcloud::install() {
