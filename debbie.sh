@@ -264,19 +264,32 @@ INSTALL[core]=debbie::core::install
 BUILD[core]=debbie::core::build
 
 ## build: packages used to build / debug other things
+debbie::build::prepare() {
+  # Hop to testing for clang-9.
+  cat <<EOF | sudo tee /etc/apt/apt.conf.d/99defaultrelease
+APT::Default-Release "stable";
+EOF
+
+  cat <<EOF | sudo tee /etc/apt/sources.list.d/testing.list
+deb     http://deb.debian.org/debian/    testing main contrib non-free
+deb-src http://deb.debian.org/debian/    testing main contrib non-free
+
+# deb     http://security.debian.org/         testing/updates  main contrib non-free
+EOF
+
+  sudo apt-get update
+}
+
 debbie::build::install() {
   util::install_packages \
     autoconf \
     cgmanager \
-    clang \
     devscripts \
     dosfstools \
     gdb \
     graphviz \
     jq \
     libnotify-bin \
-    lldb \
-    llvm \
     make \
     mlocate \
     ntfs-3g \
@@ -289,9 +302,14 @@ debbie::build::install() {
   # PIP packages as well
   python3 -m pip install --user wheel setuptools
   python3 -m pip install --user pyyaml pathspec yamllint
+
+  # Clang backport install:
+  util::install_packages \
+    -t testing \
+    clang llvm lldb
 }
 
-PREPARE[build]=util::noop
+PREPARE[build]=debbie::build::prepare
 INSTALL[build]=debbie::build::install
 BUILD[build]=util::noop
 
