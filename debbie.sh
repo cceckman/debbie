@@ -22,15 +22,11 @@ declare -A INSTALL
 declare -A BUILD
 export PREPARE INSTALL BUILD
 
-DEFAULT_FEATURES="+core +build +home +tmux +tldr +graphical"
+DEFAULT_FEATURES="+update +core +build +home +tmux +tldr +graphical"
 
 util::all_features() {
   for feature in "${!PREPARE[@]}"
   do
-    if test "$feature" == "prestage"
-    then
-      continue
-    fi
     echo -n "${feature} "
   done
 }
@@ -58,7 +54,7 @@ EOF
 main() {
   local INPUT_FEATURES="$DEFAULT_FEATURES $*"
   declare -a FEATURES
-  FEATURES=(prestage)
+  FEATURES=()
 
   local ERR="false"
   for flag in $INPUT_FEATURES
@@ -82,7 +78,7 @@ main() {
         done
         continue
         ;;
-      '-all') FEATURES=(prestage); continue;;
+      '-all') FEATURES=(); continue;;
       *help) util::help "$0";;
     esac
 
@@ -198,8 +194,8 @@ util::install_packages() {
     install "$@"
 }
 
-## prestage
-debbie::prestage::prepare() {
+## update
+debbie::update::prepare() {
   # "prepare" steps are usually installing new repositories.
   # Make sure there's a directory to install into.
   if ! test -d /etc/apt/sources.list.d
@@ -213,13 +209,13 @@ debbie::prestage::prepare() {
   # but these are still needed.
   sudo apt-get install -y lsb-release curl gnupg2
 }
-debbie::prestage::install() {
+debbie::update::install() {
   sudo apt-get update
   sudo apt-get upgrade -y
 }
-PREPARE[prestage]=debbie::prestage::prepare
-INSTALL[prestage]=debbie::prestage::install
-BUILD[prestage]=util::noop
+PREPARE[update]=debbie::update::prepare
+INSTALL[update]=debbie::update::install
+BUILD[update]=util::noop
 
 ## core:
 ## I want these packages everywhere, including on lightweight/temp remotes.
