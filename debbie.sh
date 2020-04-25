@@ -591,6 +591,18 @@ debbie::ssh-target::build() {
   then
     echo "$SLBU" | sudo tee -a /etc/ssh/sshd_config >/dev/null
   fi
+  # Disable password authentication
+  NOPA="PasswordAuthentication no"
+  NOEP="PermitEmptyPasswords no"
+  if ! grep -q "^$NOPA" /etc/ssh/sshd_config
+  then
+    echo "$NOPA" | sudo tee -a /etc/ssh/sshd_config >/dev/null
+  fi
+  if ! grep -q "^$NOEP" /etc/ssh/sshd_config
+  then
+    echo "$NOEP" | sudo tee -a /etc/ssh/sshd_config >/dev/null
+  fi
+  sudo systemctl restart sshd
 }
 
 PREPARE[ssh-target]=util::noop
