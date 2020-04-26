@@ -227,6 +227,7 @@ debbie::core::install() {
     dnsutils \
     fping \
     git \
+    htop \
     ipcalc \
     locales \
     mtr \
