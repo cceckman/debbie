@@ -479,11 +479,11 @@ BUILD[docker]=debbie::docker::build
 
 ## bazel
 debbie::bazel::prepare() {
+  # TODO: Add utils:: to align with docker, gcloud; verify key
   if ! grep -Rq "https://storage.googleapis.com/bazel-apt" /etc/apt/sources.list /etc/apt/sources.list.d
   then
     echo "deb https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
-    # TODO: Add utils:: to align with docker, gcloud; verify key
-    curl https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg | sudo apt-key add  -
+    curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add  -
   fi
 }
 debbie::bazel::install() {
