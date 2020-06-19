@@ -20,7 +20,8 @@
 declare -A PREPARE
 declare -A INSTALL
 declare -A BUILD
-export PREPARE INSTALL BUILD
+declare -A FEATURES
+export PREPARE INSTALL BUILD FEATURES
 
 DEFAULT_FEATURES="+update +core +build +home +tmux +tldr +graphical"
 
@@ -518,7 +519,7 @@ BUILD[bazel]=debbie::bazel::build
 
 ## tmux
 debbie::tmux::build() {
-  TMUX_VNO="3.0a"
+  TMUX_VNO="3.1b"
   if command -v tmux >/dev/null && util::vergte "$TMUX_VNO" "$(tmux -V)"
   then
     echo "Have tmux $(tmux -V), skipping build"
@@ -528,7 +529,7 @@ debbie::tmux::build() {
   pushd /tmp
   {
     # Build dependencies; should be apt-get build-dep tmux
-    sudo apt-get -y install libncurses5-dev automake libevent-dev bison
+    sudo apt-get -y install libncurses-dev automake libevent-dev bison
     TMUXTAR=/tmp/tmux.tar.gz
     curl -Lo $TMUXTAR https://github.com/tmux/tmux/archive/${TMUX_VNO}.tar.gz
     tar -xvf $TMUXTAR
@@ -614,7 +615,7 @@ BUILD[ssh-target]=debbie::ssh-target::build
 debbie::tldr::install() {
   # Pinning the version by content SHA, so we'll error if there's an update we don't know of.
   curl -Lo ~/scripts/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr
-  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "b53cbea0945b4164e1e4ead41fcb0ebc122d04f7bd098f0d9fedd5d278b61b32"
+  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "9a2f1d84f64830eba9eca3b94caf06d827ed1815368391af31bae1e5b8b72479"
   then
     echo >&2 "Unexpected contents for ~/scripts/tldr"
     echo >&2 "Check it out, and update debbie.sh if it's OK."
