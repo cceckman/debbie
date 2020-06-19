@@ -421,10 +421,6 @@ debbie::home::install() {
 debbie::home::build() {
   # Use `sudo` so it doesn't prompt to enter $USER's password againa
   sudo chsh -s "$(command -v zsh)" "$USER"
-  # Get public key used for signing.
-  curl -Lo- \
-    https://raw.githubusercontent.com/cceckman/debbie/master/pubkeys.pgp \
-    | gpg --import
   # Create undo & swap Vim directories, to keep tem out of the working dirs
   mkdir -p "$HOME/.vim/swap" "$HOME/.vim/undo"
 }
@@ -700,11 +696,10 @@ HRD
 
 debbie::redo::install() {
   util::install_packages \
-    python3 \
-    python3-setproctitle
+    python3
 }
 debbie::redo::build(){
-  local version="0.42a"
+  local version="0.42c"
   if command -v redo && test "$(redo --version)" = "$version"
   then
     return 0
