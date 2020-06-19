@@ -304,7 +304,7 @@ debbie::build::install() {
   # Clang backport install:
   util::install_packages \
     -t testing \
-    clang llvm lldb
+    clang llvm lldb lld
 }
 
 PREPARE[build]=debbie::build::prepare
