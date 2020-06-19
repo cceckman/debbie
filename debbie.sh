@@ -317,6 +317,7 @@ debbie::graphical::install() {
     chromium \
     chromium-sandbox \
     cmatrix \
+    curl \
     i3 \
     i3status \
     konsole \
