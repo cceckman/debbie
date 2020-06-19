@@ -280,6 +280,8 @@ EOF
 
 debbie::build::install() {
   util::install_packages \
+    apt-cacher-ng \
+    auto-apt-proxy \
     autoconf \
     cgmanager \
     devscripts \
@@ -295,7 +297,9 @@ debbie::build::install() {
     parted \
     pcscd \
     pkg-config \
-    python3-pip
+    python3-pip \
+    sbuild \
+
 
   # PIP packages as well
   python3 -m pip install --user wheel setuptools
@@ -483,6 +487,7 @@ debbie::bazel::prepare() {
     echo "deb https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
     curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add  -
   fi
+  sudo apt-get update
 }
 debbie::bazel::install() {
   util::install_packages bazel
