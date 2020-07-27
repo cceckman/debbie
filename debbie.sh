@@ -291,6 +291,7 @@ debbie::build::install() {
     jq \
     libnotify-bin \
     make \
+    manpages-dev \
     mlocate \
     ntfs-3g \
     parallel \
