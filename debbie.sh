@@ -23,7 +23,7 @@ declare -A BUILD
 declare -A FEATURES
 export PREPARE INSTALL BUILD FEATURES
 
-DEFAULT_FEATURES="+update +core +build +home +tmux +tldr +graphical"
+DEFAULT_FEATURES="+update +core +build +home +tmux +tldr"
 
 util::all_features() {
   for feature in "${!PREPARE[@]}"
