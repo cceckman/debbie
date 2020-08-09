@@ -262,18 +262,42 @@ INSTALL[core]=debbie::core::install
 BUILD[core]=debbie::core::build
 
 ## build: packages used to build / debug other things
+debbie::build::prepare() {
+  # Use LLVM project's repos for Clang, to stay up to date
+  # https://apt.llvm.org/
+
+  cat <<SOURCES | sudo tee /etc/apt/sources.list.d/llvm.list
+deb http://apt.llvm.org/buster/ llvm-toolchain-buster main
+deb-src http://apt.llvm.org/buster/ llvm-toolchain-buster main
+# 10
+deb http://apt.llvm.org/buster/ llvm-toolchain-buster-10 main
+deb-src http://apt.llvm.org/buster/ llvm-toolchain-buster-10 main
+# 11
+deb http://apt.llvm.org/buster/ llvm-toolchain-buster-11 main
+deb-src http://apt.llvm.org/buster/ llvm-toolchain-buster-11 main
+SOURCES
+  curl -Lo- https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+  sudo apt-get update
+}
+
 debbie::build::install() {
   util::install_packages \
-    apt-cacher-ng \
-    auto-apt-proxy \
     autoconf \
     cgmanager \
+    clang \
+    clang \
+    clang-format \
+    clang-tidy \
     devscripts \
     dosfstools \
     gdb \
     graphviz \
     jq \
+    libclang-dev \
     libnotify-bin \
+    lld \
+    lldb \
+    llvm \
     make \
     manpages-dev \
     mlocate \
@@ -284,19 +308,15 @@ debbie::build::install() {
     pkg-config \
     python3-pip \
     sbuild \
-
+    software-properties-common \
 
   # PIP packages as well
   python3 -m pip install --user wheel setuptools
   python3 -m pip install --user pyyaml pathspec yamllint
 
-  # Install a more-recent clang:
-  curl -Lo /tmp/llvm.sh https://apt.llvm.org/llvm.sh
-  chmod +x /tmp/llvm.sh
-  sudo /tmp/llvm.sh 11
 }
 
-PREPARE[build]=util::noop
+PREPARE[build]=debbie::build::prepare
 INSTALL[build]=debbie::build::install
 BUILD[build]=util::noop
 
