@@ -641,12 +641,6 @@ debbie::rust::install() {
   pushd /tmp
   {
     curl https://sh.rustup.rs -sSf -o rustup.sh
-    if ! test "$(sha256sum rustup.sh | cut -d' ' -f1)" = "79552216b4ccab5f773a981bc156b38b004a4f94ac5d2b83f8e127020a4d0bfe"
-    then
-      echo >&2 "Unexpected contents for /tmp/rustup.sh"
-      echo >&2 "Check it out, and update debbie.sh if it's OK."
-      exit 1
-    fi
     chmod +x rustup.sh
     ./rustup.sh -y --no-modify-path
     PATH="$HOME/.cargo/bin:$PATH"
