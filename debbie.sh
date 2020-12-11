@@ -657,8 +657,8 @@ BUILD[rust]=util::noop
 # all in the same, not-really-right place. Install / build from source instead.
 debbie::fomu::install() {
   # I'd like to build "hotter", i.e. from upstream, but we'll do this for now.
-  FOMU_VNO="1.5.5"
-  FOMU_HASH="67bbc422237fe2949a30d85aeee9c53eef99fe9c2f886e895751fde3e2485c6a"
+  FOMU_VNO="1.5.6"
+  FOMU_HASH="0847802dfe7e8d0ee2f08989d5fc262f218b79bac01add717372777e64bd19b5"
   mkdir -p "$HOME/bin"
   pushd /tmp
   if ! test "$(cat "$HOME/bin/fomu-toolchain/.installed")" = "$FOMU_HASH"
@@ -674,23 +674,23 @@ debbie::fomu::install() {
     echo "$FOMU_HASH" >"$HOME/bin/fomu-toolchain/.installed"
   fi
   # Ensure we have permissions:
-  {
-    sudo groupadd plugdev || true
-    sudo usermod -a -G plugdev "$USER" || true
-    local UDEV="/etc/udev/rules.d/99-fomu.rules"
-    cat >/tmp/fomu-udev-rules <<HRD
-SUBSYSTEM=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="5bf0", MODE="0664", GROUP="plugdev"
-HRD
+  # {
+  #   sudo groupadd plugdev || true
+  #   sudo usermod -a -G plugdev "$USER" || true
+  #   local UDEV="/etc/udev/rules.d/99-fomu.rules"
+  #   cat >/tmp/fomu-udev-rules <<HRD
+  #UBSYSTEM=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="5bf0", MODE="0664", GROUP="plugdev"
+  #RD
 
-    if ! { test -e "$UDEV" && test "$(cat /tmp/fomu-udev-rules)" = "$(cat "$UDEV")" ; }
-    then
-      # This is an OK cat! shellcheck complains about it either way!
-      # shellcheck disable=SC2002
-      cat /tmp/fomu-udev-rules | sudo tee  "$UDEV"
-      sudo udevadm control --reload-rules
-      sudo udevadm trigger
-    fi
-  }
+  #   if ! { test -e "$UDEV" && test "$(cat /tmp/fomu-udev-rules)" = "$(cat "$UDEV")" ; }
+  #   then
+  #     # This is an OK cat! shellcheck complains about it either way!
+  #     # shellcheck disable=SC2002
+  #     cat /tmp/fomu-udev-rules | sudo tee  "$UDEV"
+  #     sudo udevadm control --reload-rules
+  #     sudo udevadm trigger
+  #   fi
+  # }
 
   popd
 }
@@ -728,6 +728,26 @@ PREPARE[redo]=util::noop
 INSTALL[redo]=debbie::redo::install
 BUILD[redo]=debbie::redo::build
 
+debbie::powershell::prepare() {
+  # Download the Microsoft repository GPG keys
+  TEMP="$(mktemp)"
+  VERSION="$(cut -d. -f1 /etc/debian_version)"
+  curl -Lo "$TEMP" https://packages.microsoft.com/config/debian/${VERSION}/packages-microsoft-prod.deb
+
+  # Register the Microsoft repository GPG keys
+  sudo dpkg -i "$TEMP"
+
+  # Update the list of products
+  sudo apt-get update
+}
+
+debbie::powershell::install() {
+  sudo apt-get install -y powershell
+}
+
+PREPARE[powershell]=debbie::powershell::prepare
+INSTALL[powershell]=debbie::powershell::install
+BUILD[powershell]=util::noop
 
 ## TODO: LSPs
 ## TODO: ctags? Removed because of the above TODO; LSPs are the new thing.
