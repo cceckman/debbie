@@ -348,7 +348,7 @@ debbie::graphical::install() {
 
 ### Firacode helper for graphical target.
 debbie::graphical::install::firacode() {
-  FIRA_VNO="2"
+  FIRA_VNO="5"
 
   # Check presence...
   if FONT=$(fc-list | grep -o '[^ ]*FiraCode-Regular.ttf')
@@ -502,7 +502,7 @@ debbie::bazel::build() {
   go get -u github.com/bazelbuild/buildtools/buildifier
   set +x
 
-  IBAZEL_VNO="0.12.3"
+  IBAZEL_VNO="0.15.0"
   if command -v ibazel >/dev/null && util::vergte "$IBAZEL_VNO" "$(ibazel 2>&1 | head -1 | grep -o '[^v]*$')"
   then
     return
@@ -558,7 +558,7 @@ BUILD[tmux]=debbie::tmux::build
 debbie::golang::install() {
   util::install_packages vim git
 
-  GO_VNO="1.14.1"
+  GO_VNO="1.15.8"
 
   # We don't early-exit here so that we run :GoInstallBinaries at the end
   if ! (command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)")
