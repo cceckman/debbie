@@ -208,7 +208,7 @@ debbie::update::prepare() {
   # They can rely on https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html
   # (e.g. `tee`, `grep`), `apt` (assume Debian), and `sudo` (assume it's installed),
   # but these are still needed.
-  sudo apt-get install -y lsb-release curl gnupg2
+  util::install_packages lsb-release curl gnupg2
 }
 debbie::update::install() {
   sudo apt-get update
@@ -440,7 +440,7 @@ debbie::gcloud::prepare() {
 
   curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 
-  sudo apt-get update && sudo apt-get install google-cloud-sdk
+  sudo apt-get update
 }
 
 debbie::gcloud::install() {
@@ -531,7 +531,7 @@ debbie::tmux::build() {
   pushd /tmp
   {
     # Build dependencies; should be apt-get build-dep tmux
-    sudo apt-get -y install libncurses-dev automake libevent-dev bison
+    util::install_packages libncurses-dev automake libevent-dev bison
     TMUXTAR=/tmp/tmux.tar.gz
     curl -Lo $TMUXTAR https://github.com/tmux/tmux/archive/${TMUX_VNO}.tar.gz
     tar -xvf $TMUXTAR
@@ -721,7 +721,7 @@ debbie::powershell::prepare() {
 }
 
 debbie::powershell::install() {
-  sudo apt-get install -y powershell
+  util::install_packages powershell
 }
 
 PREPARE[powershell]=debbie::powershell::prepare
