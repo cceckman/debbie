@@ -23,7 +23,7 @@ declare -A BUILD
 declare -A FEATURES
 export PREPARE INSTALL BUILD FEATURES
 
-DEFAULT_FEATURES="+update +core +build +home +tmux +tldr"
+DEFAULT_FEATURES="+update +core +build +home +tmux"
 
 util::all_features() {
   for feature in "${!PREPARE[@]}"
@@ -617,22 +617,6 @@ debbie::ssh-target::build() {
 PREPARE[ssh-target]=util::noop
 INSTALL[ssh-target]=debbie::ssh-target::install
 BUILD[ssh-target]=debbie::ssh-target::build
-
-## tldr
-debbie::tldr::install() {
-  # Pinning the version by content SHA, so we'll error if there's an update we don't know of.
-  curl -Lo ~/scripts/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr
-  if ! test "$(sha256sum ~/scripts/tldr | cut -d' ' -f1)" = "9a2f1d84f64830eba9eca3b94caf06d827ed1815368391af31bae1e5b8b72479"
-  then
-    echo >&2 "Unexpected contents for ~/scripts/tldr"
-    echo >&2 "Check it out, and update debbie.sh if it's OK."
-    exit 1
-  fi
-  chmod +x ~/scripts/tldr
-}
-PREPARE[tldr]=util::noop
-INSTALL[tldr]=debbie::tldr::install
-BUILD[tldr]=util::noop
 
 ## rust
 debbie::rust::install() {
