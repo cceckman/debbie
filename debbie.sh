@@ -270,6 +270,10 @@ debbie::build::prepare() {
 # 11
 deb http://apt.llvm.org/buster/ llvm-toolchain-buster-11 main
 deb-src http://apt.llvm.org/buster/ llvm-toolchain-buster-11 main
+# 12
+deb http://apt.llvm.org/buster/ llvm-toolchain-buster-12 main
+deb-src http://apt.llvm.org/buster/ llvm-toolchain-buster-12 main
+
 SOURCES
   curl -Lo- https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
   sudo apt-get update
@@ -291,7 +295,6 @@ debbie::build::install() {
     libclang-dev \
     libnotify-bin \
     lld \
-    lldb \
     llvm \
     make \
     manpages-dev \
@@ -343,7 +346,7 @@ debbie::graphical::install() {
 
 ### Firacode helper for graphical target.
 debbie::graphical::install::firacode() {
-  FIRA_VNO="5"
+  FIRA_VNO="5.2"
 
   # Check presence...
   if FONT=$(fc-list | grep -o '[^ ]*FiraCode-Regular.ttf')
@@ -366,7 +369,7 @@ debbie::graphical::install::firacode() {
   mkdir -p "$fonts_dir"
   TDIR="$(mktemp -d)"
   curl -Lo "$TDIR/firacode.zip" \
-    "https://github.com/tonsky/FiraCode/releases/download/$FIRA_VNO/FiraCode_${FIRA_VNO}.zip"
+    "https://github.com/tonsky/FiraCode/releases/download/$FIRA_VNO/Fira_Code_v${FIRA_VNO}.zip"
   unzip "$TDIR/firacode.zip" -d "$TDIR" 'ttf/*.ttf'
   mv -f "$TDIR"/ttf/*.ttf "$fonts_dir"
   rm -rf "$TDIR"
