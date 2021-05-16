@@ -524,7 +524,7 @@ BUILD[bazel]=debbie::bazel::build
 
 ## tmux
 debbie::tmux::build() {
-  TMUX_VNO="3.1b"
+  TMUX_VNO="3.2"
   if command -v tmux >/dev/null && util::vergte "$TMUX_VNO" "$(tmux -V)"
   then
     echo "Have tmux $(tmux -V), skipping build"
@@ -556,7 +556,7 @@ BUILD[tmux]=debbie::tmux::build
 debbie::golang::install() {
   util::install_packages vim git
 
-  GO_VNO="1.16.3"
+  GO_VNO="1.16.4"
 
   # We don't early-exit here so that we run :GoInstallBinaries at the end
   if ! (command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)")
@@ -678,15 +678,15 @@ debbie::redo::install() {
     python3
 }
 debbie::redo::build(){
-  local version="0.42c"
-  if command -v redo && test "$(redo --version)" = "$version"
+  local REDO_VNO="0.42c"
+  if command -v redo && test "$(redo --version)" = "$REDO_VNO"
   then
     return 0
   fi
   pushd /tmp
   {
     git clone https://github.com/apenwarr/redo.git \
-      --branch "redo-${version}" \
+      --branch "redo-${REDO_VNO}" \
       --depth=1 \
       --single-branch
     cd redo
