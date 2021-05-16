@@ -276,6 +276,11 @@ deb-src http://apt.llvm.org/buster/ llvm-toolchain-buster-12 main
 
 SOURCES
   curl -Lo- https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+
+  # Use Github's servers for the `gh` CLI
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+  sudo apt-add-repository https://cli.github.com/packages
+
   sudo apt-get update
 }
 
@@ -290,6 +295,7 @@ debbie::build::install() {
     devscripts \
     dosfstools \
     gdb \
+    gh \
     graphviz \
     jq \
     libclang-dev \
