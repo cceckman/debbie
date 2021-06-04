@@ -208,7 +208,7 @@ debbie::update::prepare() {
   # They can rely on https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html
   # (e.g. `tee`, `grep`), `apt` (assume Debian), and `sudo` (assume it's installed),
   # but these are still needed.
-  util::install_packages lsb-release curl gnupg2
+  util::install_packages lsb-release curl gnupg2 software-properties-common
 }
 debbie::update::install() {
   sudo apt-get update
