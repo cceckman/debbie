@@ -506,7 +506,7 @@ debbie::bazel::build() {
   go get -u github.com/bazelbuild/buildtools/buildifier
   set +x
 
-  IBAZEL_VNO="0.15.0"
+  IBAZEL_VNO="0.15.10"
   if command -v ibazel >/dev/null && util::vergte "$IBAZEL_VNO" "$(ibazel 2>&1 | head -1 | grep -o '[^v]*$')"
   then
     return
@@ -530,7 +530,7 @@ BUILD[bazel]=debbie::bazel::build
 
 ## tmux
 debbie::tmux::build() {
-  TMUX_VNO="3.2"
+  TMUX_VNO="3.2a"
   if command -v tmux >/dev/null && util::vergte "$TMUX_VNO" "$(tmux -V)"
   then
     echo "Have tmux $(tmux -V), skipping build"
@@ -562,7 +562,7 @@ BUILD[tmux]=debbie::tmux::build
 debbie::golang::install() {
   util::install_packages vim git
 
-  GO_VNO="1.16.4"
+  GO_VNO="1.17.1"
 
   # We don't early-exit here so that we run :GoInstallBinaries at the end
   if ! (command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)")
@@ -681,16 +681,17 @@ debbie::fomu::install() {
 
 debbie::redo::install() {
   util::install_packages \
-    python3
+    python3 mkdocs
 }
 debbie::redo::build(){
-  local REDO_VNO="0.42c"
+  local REDO_VNO="0.42d"
   if command -v redo && test "$(redo --version)" = "$REDO_VNO"
   then
     return 0
   fi
   pushd /tmp
   {
+    sudo rm -rf redo
     git clone https://github.com/apenwarr/redo.git \
       --branch "redo-${REDO_VNO}" \
       --depth=1 \
@@ -698,8 +699,8 @@ debbie::redo::build(){
     cd redo
     ./do -j"$(nproc)" test
     # Instructions don't have -E, "preserve environment",
-    # but it looks like it's necessary.
-    DESTDIR='' PREFIX=/usr/local sudo -E ./do install
+    # but it looks like it's necessary if installing via sudo.
+    DESTDIR='' PREFIX=/usr/local sudo -E ./do -j"$(nproc)" install
   }
   popd
 }
