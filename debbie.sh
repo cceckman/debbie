@@ -155,6 +155,8 @@ main() {
   echo "All done!"
 }
 
+VERSION_CODENAME="$(env -i bash -c '. /etc/os-release; echo $VERSION_CODENAME')"
+
 # Some preflight checks that should run before any module.
 util::preflight() {
   for tool in sudo apt-get
@@ -236,6 +238,7 @@ debbie::core::install() {
     netcat \
     psmisc \
     python3 \
+    ripgrep \
     rsync \
     socat \
     ssh \
@@ -267,12 +270,9 @@ debbie::build::prepare() {
   # https://apt.llvm.org/
 
   cat <<SOURCES | sudo tee /etc/apt/sources.list.d/llvm.list
-# 11
-deb http://apt.llvm.org/buster/ llvm-toolchain-buster-11 main
-deb-src http://apt.llvm.org/buster/ llvm-toolchain-buster-11 main
 # 12
-deb http://apt.llvm.org/buster/ llvm-toolchain-buster-12 main
-deb-src http://apt.llvm.org/buster/ llvm-toolchain-buster-12 main
+deb http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-13 main
+deb-src http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-13 main
 
 SOURCES
   curl -Lo- https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
@@ -287,7 +287,6 @@ SOURCES
 debbie::build::install() {
   util::install_packages \
     autoconf \
-    cgmanager \
     clang \
     clang \
     clang-format \
@@ -331,6 +330,7 @@ debbie::graphical::install() {
     chromium-sandbox \
     cmatrix \
     curl \
+    dmenu \
     i3 \
     i3status \
     konsole \
@@ -391,8 +391,8 @@ BUILD[graphical]=util::noop
 ## A lower-level than graphical; e.g. starting from minbase.
 debbie::displaymanager::prepare() {
   cat <<SRC | sudo tee /etc/apt/sources.list.d/deb-nonfree.list
-deb http://deb.debian.org/debian buster non-free contrib
-deb-src http://deb.debian.org/debian buster non-free contrib
+deb http://deb.debian.org/debian non-free contrib
+deb-src http://deb.debian.org/debian ${VERSION_CODENAME} non-free contrib
 SRC
 
 }
