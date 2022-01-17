@@ -410,7 +410,7 @@ BUILD[displaymanager]=util::noop
 
 ## home
 debbie::home::install() {
-  util::install_packages git
+  util::install_packages git zsh
   pushd "$HOME"
   {
     if ! test -d ".git"
@@ -562,7 +562,7 @@ BUILD[tmux]=debbie::tmux::build
 debbie::golang::install() {
   util::install_packages vim git
 
-  GO_VNO="1.17.1"
+  GO_VNO="1.17.6"
 
   # We don't early-exit here so that we run :GoInstallBinaries at the end
   if ! (command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)")
