@@ -530,7 +530,7 @@ BUILD[bazel]=debbie::bazel::build
 
 ## tmux
 debbie::tmux::build() {
-  TMUX_VNO="3.2a"
+  TMUX_VNO="3.3a"
   if command -v tmux >/dev/null && util::vergte "$TMUX_VNO" "$(tmux -V)"
   then
     echo "Have tmux $(tmux -V), skipping build"
@@ -562,7 +562,7 @@ BUILD[tmux]=debbie::tmux::build
 debbie::golang::install() {
   util::install_packages vim git
 
-  GO_VNO="1.17.6"
+  GO_VNO="1.18.3"
 
   # We don't early-exit here so that we run :GoInstallBinaries at the end
   if ! (command -v go >/dev/null && util::vergte "$GO_VNO" "$(go version)")
