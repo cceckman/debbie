@@ -348,6 +348,18 @@ debbie::graphical::install() {
     yubikey-personalization
 
   debbie::graphical::install::firacode
+  fc-cache -f
+}
+
+### Helper for installing fonts.
+### TODO: Include IBM Plex as well
+debbie::graphical::install_font() {
+  fonts_dir="${HOME}/.local/share/fonts"
+  mkdir -p "$fonts_dir"
+  TDIR="$(mktemp -d)"
+  unzip "$1" -d "$TDIR" '**.ttf'
+  mv -f "$TDIR/*.ttf" "$fonts_dir"
+  rm -rf "$TDIR"
 }
 
 ### Firacode helper for graphical target.
@@ -371,16 +383,10 @@ debbie::graphical::install::firacode() {
     fi
   fi
 
-  fonts_dir="${HOME}/.local/share/fonts"
-  mkdir -p "$fonts_dir"
   TDIR="$(mktemp -d)"
   curl -Lo "$TDIR/firacode.zip" \
     "https://github.com/tonsky/FiraCode/releases/download/$FIRA_VNO/Fira_Code_v${FIRA_VNO}.zip"
-  unzip "$TDIR/firacode.zip" -d "$TDIR" 'ttf/*.ttf'
-  mv -f "$TDIR"/ttf/*.ttf "$fonts_dir"
-  rm -rf "$TDIR"
-
-  fc-cache -f
+  debbie::graphical::install_font "$TDIR/firacode.zip"
 }
 
 PREPARE[graphical]=util::noop
