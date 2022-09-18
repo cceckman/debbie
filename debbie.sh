@@ -277,12 +277,6 @@ deb-src http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENA
 SOURCES
   curl -Lo- https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 
-  # Use Github's servers for the `gh` CLI
-  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-    | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-  && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-
   sudo apt-get update
 }
 
@@ -296,7 +290,6 @@ debbie::build::install() {
     devscripts \
     dosfstools \
     gdb \
-    gh \
     graphviz \
     jq \
     libclang-dev \
